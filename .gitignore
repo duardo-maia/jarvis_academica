@@ -25,6 +25,7 @@ htmlcov/
 # Variáveis de ambiente
 .env
 .env.*
+!.env.example
 
 # IDEs
 .vscode/
@@ -33,3 +34,4 @@ htmlcov/
 # Sistema operacional
 .DS_Store
 Thumbs.db
+*.db
