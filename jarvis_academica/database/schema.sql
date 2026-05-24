@@ -65,6 +65,8 @@ VALUES
 
 INSERT INTO tarefas (titulo, descricao, prioridade)
 VALUES
-('Estudar para a prova de Cálculo', 'Revisar integrais e derivadas', 'alta'),
-('Entregar relatório do projeto', 'Finalizar e enviar o relatório da disciplina de ES', 'alta'),
-('Comprar material de escritório', NULL, 'baixa');
+('[BUG] IA respondendo "não sei" para tudo', 'Modelo treinado com excesso de humildade. Investigate se o problema está no dataset ou se ela simplesmente desistiu da vida.', 'alta'),
+('[FEATURE] Adicionar memória de longo prazo ao agente', 'Usuário pediu para o agente lembrar que ele não gosta de café. O agente esqueceu. Usuário está chateado.', 'alta'),
+('[MELHORIA] Reduzir tempo de resposta do chatbot', 'Atualmente o bot pensa por 40 segundos antes de dizer "olá". Usuários acharam que era meditação guiada.', 'normal'),
+('[REVISÃO] Checar alucinações no relatório gerado', 'O modelo incluiu três referências bibliográficas que não existem e citou um autor chamado "Prof. Dr. Fictício da Silva".', 'normal'),
+('[DOCS] Escrever tutorial de uso do sistema', 'Ninguém leu o último tutorial. Talvez porque estava em LaTeX. Reescrever em linguagem humana desta vez.', 'baixa');

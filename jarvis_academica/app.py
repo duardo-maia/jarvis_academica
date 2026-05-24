@@ -1,6 +1,6 @@
 import streamlit as st
-from agente.agente import (
-    rodar_agente,
+from agente.agente import rodar_agente
+from database.operacoes import (
     listar_tarefas,
     adicionar_tarefa,
     concluir_tarefa,
