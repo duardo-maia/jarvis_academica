@@ -1,0 +1,75 @@
+## embedding
+
+Embedding é um método para representar vetores de dados (como textos, imagens e áudios), que são usados em algorítimos de modelos de aprendizado de máquina (ML) e pesquisa semântica. O embedding é uma ferramenta essencial para engenheiros de ML que desenvolvem motores de busca de texto e imagem, sistemas de recomendação, chatbots, sistemas de detecção de fraudes, entre outras aplicações. Em essência, o embedding permite que os modelos de aprendizado de máquina encontrem objetos
+
+similares. Diferentemente de outras técnicas de ML, os embeddings são aprendidos a partir dos dados por meio de diversos algoritmos, como redes neurais, em vez de exigir que especialistas humanos definam manualmente suas características. Isso permite que o modelo aprenda padrões e relações complexas nos dados, que seriam impossíveis de identificar manualmente. Por exemplo, a implementação da incorporação da OpenAI permite que o ChatGPT compreenda facilmente as relações entre diferentes palavras e categorias, em vez de apenas analisar cada palavra de maneira isolada. Com as incorporações, os modelos do GPT da OpenAI podem gerar respostas mais coerentes e contextualmente relevantes às solicitações e perguntas do usuário. Como funciona o embedding em Machine Learning A maioria dos algoritmos de aprendizado de máquina só pode obter dados numéricos de baixa dimensão como entradas. Portanto, é necessário converter os dados em um formato numérico. Isso pode envolver questões como a criação de uma representação de "saco de palavras" para dados de texto, a conversão de imagens em valores de pixel ou a transformação de dados gráficos em uma matriz numérica. Os objetos que entram em um modelo de incorporação saem como incorporações,
+
+representados como vetores.
+
+Um vetor é uma matriz de números (por exemplo, 1489, 22… 3, 777), em que cada número indica onde um objeto está ao longo de uma dimensão especificada. O número de dimensões pode chegar a mil ou mais dependendo da complexidade dos dados de entrada. Quanto mais próxima uma incorporação estiver de outras incorporações nesse espaço n-dimensional, mais semelhantes elas serão. A similaridade de distribuição é determinada pelo comprimento dos pontos vetoriais de um objeto para o outro (medido em Euclidiano, coseno ou outra medida).
+
+Um modelo, Word2Vec (palavra para vetor), desenvolvido pela Google em 2013, é um método para criar incorporações de palavras de forma eficiente usando uma rede neural de duas camadas. Ele usa como input uma palavra e gera uma coordenada n-dimensional (o vetor de incorporação) de modo que, quando você trace esses vetores de palavras em um espaço tridimensional, os sinônimos se agrupem.
+
+Veja como duas palavras, "papai" e "mamãe" seriam representadas como vetores:
+
+"dumad'=[0,1548,0,4848,…,1,864]
+
+"MoM'=[0,8785,0,8974,…,2,794]
+
+Embora haja alguma semelhança entre essas duas palavras, esperamos que "pai" esteja muito mais perto de "pai" no espaço vetorial, resultando em um produto escalar mais alto ( uma medida da direção relativa de dois vetores e o quanto eles se alinham na direção em que apontam ).
+
+Um exemplo mais complexo é a incorporação de recomendações, que funciona representando usuários e itens (por exemplo, filmes, produtos, artigos) como vetores de alta dimensão em um espaço vetorial contínuo. Essas incorporações capturam elementos latentes que refletem as preferências dos usuários e as características do item. A ideia é aprender uma representação para cada usuário e item de tal forma que o produto escalar de suas incorporações esteja correlacionado com a preferência do usuário para o item em questão.
+
+Cada usuário e item está associado a um vetor de incorporação. Esses vetores normalmente são aprendidos por meio de um modelo de recomendação durante um processo de treinamento. As incorporações do usuário e do item são organizadas em matrizes. As linhas da matriz de usuário representam os usuários e as linhas da
+
+matriz de item representam os itens. A pontuação de recomendação de um par de usuário-item pode ser determinada calculando o produto escalar do vetor de incorporação do usuário e o do item. Quanto maior o produto escalar, maior a probabilidade de o usuário estar interessado no item. REcoMMENdumatioNScorE=USErEMbEddiNg ⋅ ItEMEMbEddiNg As matrizes de incorporação são aprendidas por meio de um processo de treinamento que usa interações históricas entre usuário e item. O modelo tem como objetivo minimizar a diferença entre as pontuações previstas e as preferências reais do usuário (por exemplo, classificações, cliques, compras). Depois que o modelo é treinado, ele pode ser usado para gerar as melhores N recomendações para os usuários. Os itens com as pontuações previstas mais altas para um usuário são recomendados. Por que usar embedding Os embeddings são amplamente utilizados em diferentes domínios e aplicações devido à sua capacidade de transformar dados de alta dimensão e categóricos em representações vetoriais contínuas, capturando padrões, relações e significados relevantes. A seguir, algumas razões pelas quais o embedding é utilizado em ciência de dados: Representação semântica Ao mapear entidades (palavras, imagens, nós em um gráfico, etc.) para vetores em um espaço contínuo, as incorporações capturam relações semânticas e similaridades, permitindo que os modelos entendam e generalizem melhor.
+
+Redução da dimensionalidade Dados de alta dimensão, como textos, imagens ou gráficos, podem ser transformados em representações de baixa dimensão, tornando-os computacionalmente eficientes e mais fáceis de trabalhar. Melhor generalização dos modelos Ao aprender representações significativas a partir dos dados, os modelos podem generalizar bem para exemplos não vistos, o que torna as incorporações cruciais para tarefas com dados rotulados limitados. Visualização eficaz dimensão em duas ou três dimensões, fornecendo insights sobre relações e agrupamento nos dados. Treinamento eficiente em redes neurais As camadas de incorporação são comumente usadas nas arquiteturas de rede neural para mapear entradas categóricas em vetores contínuos, facilitando a Técnicas como a t-SNE podem ser aplicadas para visualizar incorporações de alta retropropagação e a otimização. Quais objetos podem usados com embedding? As incorporações são representações versáteis que podem ser aplicadas a uma ampla gama de tipos de dados. Estes são alguns dos objetos mais comuns que podem ser incorporados: Palavras As incorporações de palavras capturam as relações semânticas e os significados contextuais das palavras com base em seus padrões de uso em um determinado corpus linguístico. Cada palavra é representada como um vetor denso de tamanho fixo de números reais. É o oposto de um vetor esparso, como a codificação one-hot, que tem várias entradas zero.
+
+O uso de embedding de palavras melhorou significativamente o desempenho dos modelos de processamento de linguagem natural (PLN) ao fornecer uma representação mais significativa e eficiente das palavras. Esses embeddings permitem que as máquinas compreendam e processem a linguagem de maneira a capturar nuances semânticas e relações contextuais, tornando-os valiosos para uma ampla gama de aplicações, incluindo análise de sentimento, tradução automática e recuperação de informações.
+
+Modelos populares de incorporação de palavras incluem Word2Vec, GloVe (Vetores Globais para Representação de Palavras), FastText e incorporações derivadas de modelos baseados em transformadores como o BERT (Representações de Codificadores Bidirecionais a partir de Transformadores) e GPT (Transformador Generativo Pré-treinado). Texto A incorporação de texto estende a incorporação de palavras para representar frases, parágrafos ou documentos inteiros em um espaço vetorial contínuo. As incorporações de texto desempenham um papel crucial em várias aplicações de NLP, como a análise de sentimento, classificação de texto, tradução automática, resposta a perguntas e recuperação de informações. Modelos como o Doc2Vec, USE (Codificador de Frases Universal), BERT e ELMO (Incorporações de Modelos de Linguagem) foram treinados em grandes quantidades de corpora de incorporação pré-treinada, como Wikipedia e Google News. Imagens A incorporação de imagens foi projetada para capturar recursos visuais e informações semânticas sobre o conteúdo das imagens. As incorporações de imagens são particularmente úteis para várias tarefas de visão computacional, permitindo a modelagem de semelhanças de imagens, classificação de imagens, detecção de objetos e outras tarefas de reconhecimento visual. Redes Neurais Convolucionais (CNNs) populares para incorporações de imagens incluem modelos como VGG (Grupo de Geometria Visual), ResNet (Redes Residuais), Inception (GoogLeNet) e EfficientNet. Estes modelos foram pré-treinados em conjuntos de dados de imagem de grande escala e podem ser usados como poderosos extratores de recursos. Áudio Semelhante às incorporações de imagem e texto, as incorporações de áudio são muitas vezes geradas usando arquiteturas de deep learning, particularmente redes neurais recorrentes (RNNs), redes neurais convolucionais (CNNs) ou modelos híbridos que combinam ambas. Essas incorporações capturam os recursos e características relevantes dos dados de áudio, permitindo análises, processamento
+
+e métricas de similaridade eficazes. Incorporações de áudio são particularmente úteis em aplicações como reconhecimento de fala, classificação de áudio e análise musical, entre outras. Gráficos A incorporação de gráficos é fundamental para várias tarefas, incluindo a classificação de nós, previsão de links e detecção de comunidades em redes complexas. Essas incorporações encontram aplicações na análise de redes sociais, sistemas de recomendação, análise de rede biológica, detecção de fraudes e vários outros domínios em que os dados podem ser representados por gráficos. Como as incorporações são criadas As incorporações são criadas por meio de um processo chamado de "aprendizado por incorporação". Embora o método específico usado dependa do tipo de dado que está sendo incorporado, as incorporações são criadas seguindo estas etapas gerais: Escolha ou treine um modelo de incorporação: selecione um modelo de incorporação pré-existente adequado para seus dados e tarefas, ou treine um novo, se necessário. Para texto, você pode escolher Word2Vec, GloVe ou BERT. Para imagens, você pode usar CNNs pré-treinados, como VGG ou ResNet. Prepare seus dados: formate seus dados de forma compatível com o modelo de incorporação escolhido. Para texto, isso envolve tokenização e, possivelmente, pré-processamento. Para imagens, talvez seja necessário redimensionar e normalizar as imagens. Carregue ou treine o modelo de incorporação: se estiver usando um modelo pré-treinado, carregue os pesos e a arquitetura. Se estiver treinando um novo modelo, forneça seus dados de treinamento preparados para o algoritmo. modelo de incorporação de palavras, insira uma palavra para obter seu vetor Gere incorporações: para cada ponto de dado, use o modelo treinado ou carregado para gerar incorporações. Por exemplo, se estiver usando um correspondente.
+
+Integre as incorporações na sua aplicação: use as incorporações geradas como recursos no seu modelo de aprendizado de máquina, ou para pesquisa de similaridade, recomendação, agrupamento etc., dependendo de sua tarefa específica.
+
+Em todos os casos incorporados, a ideia é representar os dados em um espaço vetorial contínuo onde relações significativas são preservadas. O processo de treinamento envolve o ajuste dos parâmetros do modelo para minimizar a diferença entre os valores previstos e os valores reais com base na função objetiva escolhida. Depois de treinadas, as incorporações podem ser usadas para várias tarefas posteriores.
+
+## Exemplos do mundo real de incorporação
+
+As incorporações são amplamente usadas em várias aplicações do mundo real em diferentes domínios. Confira alguns exemplos:
+
+Processamento de Linguagem Natural (PNL)
+
+Embeddings de palavras na análise de sentimento: embeddings de palavras, como Word2Vec ou GloVe, são usados para representar palavras em um espaço vetorial contínuo. Modelos de análise de sentimento podem utilizar esses embeddings para entender e classificar o sentimento de um texto.
+
+BERT para perguntas e respostas: Os embeddings do BERT são usados em sistemas de perguntas e respostas. O modelo consegue compreender o contexto da pergunta e do documento para extrair informações relevantes.
+
+Similaridade de texto com Doc2Vec: os embeddings do Doc2Vec são aplicados em tarefas como a busca por documentos similares. Os embeddings dos documentos são comparados para medir a similaridade semântica entre eles.
+
+## Visão computacional
+
+Classificação de imagem com CNNs: CNNs, como VGG ou ResNet, são usados em tarefas de classificação de imagem. Os recursos da camada final ou das camadas intermediárias podem servir como embeddings de imagem.
+
+Recuperação de imagens usando CLIP: o modelo CLIP aprende embeddings conjuntos para imagens e textos. Isso permite aplicações como recuperação de imagens com base em consultas em linguagem natural.
+
+Reconhecimento facial com FaceNet: o FaceNet cria embeddings para rostos que podem ser usados para reconhecimento facial. Esses embeddings são frequentemente utilizados para medir a similaridade entre diferentes rostos.
+
+## Sistemas de recomendação
+
+Filtragem colaborativa com embeddings: os embeddings são usados para representar usuários e itens em modelos de filtragem colaborativa. Métodos de fatoração de matriz utilizam esses embeddings para fazer recomendações personalizadas.
+
+Recomendações de produtos com embeddings de palavras: no e-commerce, descrições de produtos ou avaliações podem ser transformadas
+
+em embeddings de palavras. Produtos similares podem ser recomendados com base na similaridade semântica de seus embeddings.
+
+## Aplicações intermodais
+
+Tradução multimodal com o MUSE: o MUSE (Multilingual Universal Sentence Encoder) permite uma compreensão interlinguística e intermodal. Ele pode ser utilizado para tarefas como tradução de texto entre idiomas ou conexão entre imagens e suas descrições correspondentes.
+
+Pesquisa intermodal usando joint embeddings: os joint embeddings são treinados para diferentes modalidades, como imagens e texto. Isso possibilita uma busca intermodal, onde uma consulta em uma modalidade recupera resultados em outra.
+
+Detecção de anomalias Detecção de anomalias em redes com embeddings de gráficos: os embeddings de nós de rede podem ser usados para detecção de anomalias. As alterações no espaço de embedding podem indicar um comportamento incomum. os embeddings de Detecção de fraudes com embeddings de transações: dados de transações podem ajudar a identificar padrões associados a atividades fraudulentas. Embeddings incomuns podem indicar transações potencialmente fraudulentas.
+
+FONTE: https://www.ibm.com/br-pt/think/topics/embedding

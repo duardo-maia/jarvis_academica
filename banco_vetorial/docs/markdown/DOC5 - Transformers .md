@@ -1,0 +1,103 @@
+## Transformers
+
+Os Transformers são um tipo de arquitetura de rede neural que transforma ou altera uma sequência de entrada em uma sequência de saída. Eles fazem isso aprendendo o contexto e rastreando as relações entre os componentes da sequência. Por exemplo, considere esta sequência de entrada: "Qual é a cor do céu?" O modelo do transformador usa uma representação matemática interna que identifica a relevância e a relação entre as palavras cor, céu e azul. Ele usa esse conhecimento para gerar a saída: "O céu é azul".
+
+As organizações usam modelos de transformadores para todos os tipos de conversões de sequência, desde reconhecimento de fala até tradução automática e análise de sequências de proteínas.
+
+Modelos iniciais de aprendizado profundo que se concentraram extensivamente em tarefas de processamento de linguagem natural (PNL) com o objetivo de fazer com que os computadores entendam e respondam à linguagem humana natural. O objetivo principal era prever qual seria a palavra seguinte com base na palavra anterior em uma sequência de texto.
+
+Para ilustrar esse recurso, considere o preenchimento automático de seu smartphone. Ele faz sugestões com base na frequência dos pares de palavras que você digita. Por exemplo, se você digita frequentemente "Está tudo bem", seu telefone sugere automaticamente a palavra bem depois de digitar tudo.
+
+Os primeiros modelos de aprendizado de máquina (ML) aplicavam tecnologia semelhante em uma escala mais ampla. Eles analisavam a frequência das relações entre várias combinações de palavras ou grupos de palavras em seu conjunto de dados de treinamento e previam qual seria a palavra posterior. No entanto, a tecnologia inicial não conseguia reter o contexto quando o tamanho da entrada ultrapassava um certo ponto. Por exemplo, um modelo inicial de ML não era capaz de gerar um parágrafo significativo porque não conseguia reter o contexto entre a primeira e a última frase desse parágrafo. Para gerar um resultado como "Eu sou da Itália. Eu gosto de andar a cavalo. Eu falo italiano.", o modelo precisa lembrar a conexão entre a Itália e o idioma italiano, algo que as primeiras redes neurais simplesmente não conseguiam fazer.
+
+Os modelos de transformadores mudaram fundamentalmente as tecnologias de PLN, permitindo que lidassem com essas dependências de longo alcance no texto. A seguir, ilustraremos outros benefícios dos transformadores.
+
+## Capacita modelos de grande escala
+
+Os transformadores processam sequências longas em sua totalidade com computação paralela, reduzindo consideravelmente os tempos de treinamento e processamento. Isso viabilizou o treinamento de grande modelo de linguagem (LLM) em uma escala ainda maior, como GPT e BERT, que podem aprender representações linguísticas complexas. Eles possuem bilhões de parâmetros que capturam uma ampla variedade de idiomas e conhecimento humanos, e estão impulsionando a pesquisa em direção a sistemas de IA mais generalizáveis.
+
+## Permite personalizar mais rapidamente
+
+Os modelos de transformadores capacitam o uso de técnicas como aprendizado por transferência e geração aumentada de recuperação (RAG). Essas estratégias possibilitam adaptar modelos já existentes para atender às necessidades específicas de empresas, ajustando aplicações usadas em diferentes setores. Os modelos podem ser pré-treinados em grandes conjuntos de dados e depois ajustados em conjuntos de dados menores e específicos para a tarefa em questão. Isso revolucionou a utilização de modelos avançados e eliminou as limitações associadas à falta de capital, já que eram necessários muitos recursos para treinar modelos complexos a partir do zero. Esses modelos podem alcançar alto desempenho em inúmeras áreas e são adaptáveis para diversas tarefas em diversos domínios, adequando-se a diferentes cenários de uso. Facilita a criação de sistemas de IA multimodais Os transformadores possibilitam a utilização de IA para realizar tarefas que envolvem a combinação de conjuntos de dados complexos. Por exemplo, modelos como o DALL-E mostram que os transformadores podem gerar imagens a partir de descrições textuais, combinando recursos de PLN e visão computacional. Com o auxílio dos transformadores, é viável desenvolver aplicações de IA que unem diferentes formas de dados, simulando uma compreensão e criatividade mais próximas às humanas. Pesquisa em IA e inovação no setor Os transformadores revolucionaram a pesquisa e a inovação na área de IA, expandindo os limites do que é viável no campo do machine learning. Essa revolução inspirou o desenvolvimento de novas arquiteturas e aplicações que solucionam problemas de forma inovadora. Isso possibilitou que as máquinas compreendessem e geraram linguagem humana, abrindo portas para aplicações que melhoram a experiência do cliente e criam novas oportunidades de negócios.
+
+## Quais são os casos de uso dos transformadores?
+
+É possível treinar grandes modelos de transformadores em qualquer dado sequencial, como linguagens humanas, composições musicais, linguagens de programação e muito mais. Veja a
+
+seguir alguns exemplos de casos de uso. Processamento de linguagem natural Os transformadores capacitam as máquinas na compreensão, interpretação e geração de linguagem humana de maneira extremamente precisa. Além disso, possuem a habilidade de resumir documentos extensos e gerar texto coeso e contextualmente relevante para todos os tipos de casos de uso. Assistentes virtuais, como a Alexa, usam a tecnologia dos transformadores para entender e responder aos comandos de voz. Machine translation As aplicações de tradução usam transformadores para fornecer traduções precisas e em tempo real entre os idiomas. Os transformadores melhoraram significativamente a fluência e a precisão das traduções em comparação com as tecnologias anteriores.
+
+## Análise da sequência de DNA
+
+Ao tratar segmentos de DNA como uma sequência semelhante à linguagem, os transformadores podem prever os efeitos de mutações genéticas, entender padrões genéticos e ajudar a identificar regiões do DNA responsáveis por certas doenças. Esse recurso é crucial para a medicina personalizada, já que a compreensão da composição genética de um indivíduo pode resultar em tratamentos mais eficazes.
+
+## Análise da estrutura de proteínas
+
+Já que lidam com dados sequenciais, os transformadores são ideias para modelar as longas sequências de aminoácidos que se organizam em estruturas proteicas complexas. Ao entender as estruturas das proteínas, é possível descobrir novos medicamentos e compreender processos biológicos. Além disso, os transformadores podem ser empregados em aplicações que preveem a estrutura 3D das proteínas com base em suas sequências de aminoácidos.
+
+## Como os transformadores funcionam?
+
+As redes neurais são o método predominante em diversas aplicações de IA, incluindo reconhecimento de imagens e PLN, desde o início dos anos 2000. Elas consistem de camadas de nós de computação interconectados, chamados de neurônios , que imitam o cérebro humano e trabalham em conjunto para resolver problemas complexos.
+
+As redes neurais tradicionais, que lidam com sequências de dados, geralmente usam um padrão de arquitetura de codificador/decodificador. O codificador lê e processa toda a sequência de dados de entrada, como uma frase em inglês, e a transforma em uma representação matemática compacta. Essa representação é um resumo, que captura a essência da entrada. Em seguida, o decodificador lê esse resumo e, passo a passo, gera a sequência de saída, que pode ser a mesma frase traduzida para o francês.
+
+Esse processo acontece sequencialmente, ou seja, cada palavra ou parte dos dados é processada uma após a outra. O processo é lento e pode perder alguns detalhes mais sutis em sequências grandes.
+
+## Mecanismo de autoatenção
+
+Os modelos de transformadores modificam esse processo ao incorporar um mecanismo de autoatenção . Em vez de processar os dados em ordem, o mecanismo permite que o modelo examine diferentes partes da sequência de uma só vez e determine quais partes são mais importantes.
+
+Imagine-se em um ambiente agitado, onde várias conversas acontecem ao seu redor, e você tenta focar na voz de alguém que está falando. Seu cérebro se concentra automaticamente na voz da pessoa enquanto desliga ruídos menos importantes. A autoatenção permite que o modelo faça algo semelhante: ele presta mais atenção às informações relevantes, combinando-as para gerar previsões de saída melhores. Esse mecanismo faz com que os transformadores sejam mais eficientes, permitindo que eles sejam treinados em conjuntos de dados maiores. Também é mais eficaz, especialmente ao lidar com textos longos, onde o contexto passado pode influenciar o significado de informações posteriores.
+
+## Quais são os componentes da arquitetura do transformador?
+
+A arquitetura da rede neural dos Transformadores é composta por múltiplas camadas de software que colaboram para produzir o resultado final. A imagem a seguir ilustra os componentes da arquitetura de transformação, conforme explicado no restante desta seção.
+
+<!-- image -->
+
+## Incorporações de entrada
+
+Neste estágio, a sequência de entrada é convertida para o domínio matemático, que é processável por algoritmos de software. Inicialmente, a sequência de entrada é dividida em uma série de tokens ou componentes de sequência individuais. Por exemplo, se a entrada for uma frase, os tokens correspondem às palavras. A incorporação então transforma a sequência simbólica em uma sequência vetorial matemática. Os vetores carregam informações semânticas e de sintaxe, representadas como números, e seus atributos são aprendidos durante o processo de treinamento. É possível visualizar os vetores como uma série de coordenadas em um espaço n -dimensional. Como um exemplo simples, pense em um gráfico bidimensional, onde x representa o valor alfanumérico da primeira letra da palavra e y representa suas categorias. A palavra banana tem o valor (2,2) porque começa com a letra b e está na categoria fruta . A palavra manga tem o valor (13,2) porque começa com a letra m e também está na categoria fruta. Dessa forma, o vetor ( x, y ) informa à rede neural que as palavras banana e manga estão na mesma categoria. Agora imagine um espaço n -dimensional com milhares de atributos sobre a gramática, o significado e o uso de qualquer palavra em frases que foram mapeadas e convertidas para uma série de números. O software pode usar os números para calcular as relações entre palavras em termos matemáticos e entender o modelo da linguagem humana. As incorporações fornecem uma maneira de representar tokens discretos como vetores contínuos, que o modelo pode processar e aprender. Codificação posicional A codificação posicional é um componente crucial na arquitetura do transformador, já que o modelo em si não processa dados sequenciais inerentemente em ordem. O transformador precisa de uma forma de considerar a ordem dos tokens na sequência de entrada. A codificação posicional adiciona informações à incorporação de cada token para indicar sua posição na sequência. Isso geralmente é feito através de um conjunto de funções que geram um sinal posicional exclusivo, que é adicionado à incorporação de cada token. Com a codificação posicional, o modelo pode preservar a ordem dos tokens e entender o contexto da sequência. Bloco de transformador Um modelo de transformador típico tem vários blocos de transformadores empilhados em conjunto. Cada bloco de transformador tem dois componentes principais: um mecanismo de autoatenção com várias cabeças e uma rede neural que oferece feedback direto em relação à
+
+posição dos elementos na sequência. O mecanismo de autoatenção permite que o modelo avalie a importância de diferentes símbolos na sequência. Dessa maneira, o foco é direcionado para partes relevantes da entrada durante a previsão.
+
+Por exemplo, considere as frases " Ele comeu uma manga " e " A manga da camisa ficou suja." Em ambas as frases, o significado da palavra manga não pode ser entendido sem olhar as palavras ao lado dela. As palavras comeu e camisa são essenciais para entender o significado correto. A autoatenção permite agrupar os tokens relevantes para o contexto.
+
+A camada de avanço tem componentes adicionais que ajudam o modelo do transformador a treinar e funcionar com mais eficiência. Por exemplo, cada bloco de transformador inclui:
+
+- Conexões em torno dos dois componentes principais, funcionando como atalhos. Elas permitem o fluxo de informações de uma parte da rede para outra, ignorando determinadas operações intermediárias.
+- Normalização de camadas que mantém os números dentro de um determinado intervalo, especificamente as saídas de diferentes camadas na rede, para que o modelo seja treinado sem problemas.
+- A transformação linear funciona para que o modelo ajuste os valores para realizar melhor a tarefa na qual está sendo treinado, como resumir um documento ao invés de traduzi-lo.
+
+## Blocos lineares e softmax
+
+Em última análise, o modelo precisa fazer uma previsão concreta, como escolher a próxima palavra em uma sequência. Essa é a tarefa do bloco linear. É outra camada totalmente conectada, também conhecida como camada densa, antes do estágio final. Ela executa um mapeamento linear, aprendido anteriormente, do espaço vetorial para o domínio de entrada inicial. Essa camada é essencial, e é nela que a parte responsável pela tomada de decisão do modelo transforma as representações internas complexas em previsões concretas, que podem ser interpretadas e utilizadas. O resultado gerado por essa camada é um conjunto de pontuações (geralmente chamadas de logits) para cada token possível.
+
+A função softmax representa a etapa final, convertendo as pontuações logit em uma distribuição probabilística normalizada. Cada parte do resultado softmax indica a confiança do modelo em uma determinada classe ou token.
+
+## Como os transformadores são diferentes de outras arquiteturas de redes neurais?
+
+Redes neurais recorrentes (RNNs) e redes neurais convolucionais (CNNs) são outras arquiteturas de redes neurais frequentemente empregadas em tarefas de machine learning e
+
+aprendizado profundo. Agora, vamos explorar como essas redes se relacionam com os modelos baseados em transformadores. Transformadores vs. RNNs Modelos de transformadores e RNNs são arquiteturas usadas para processar dados sequenciais. As RNNs processam sequências de dados de um elemento por vez, em iterações cíclicas. O processo começa quando a camada de entrada recebe o primeiro elemento da sequência. As informações são então passadas para uma camada oculta, que processa a entrada e envia o resultado para a etapa de tempo seguinte. Essa saída, combinada com o próximo elemento da sequência, é devolvida à camada oculta. Esse ciclo se repete para cada elemento na sequência, e a RNN mantém um vetor de estado oculto que é atualizado em cada etapa temporal. Esse processo permite efetivamente que a RNN se lembre de informações de entradas anteriores. Em contraste, os transformadores processam sequências inteiras simultaneamente. Essa paralelização permite tempos de treinamento muito mais rápidos e a capacidade de lidar com sequências muito mais longas do que as RNNs. O mecanismo de autoatenção nos transformadores também permite que o modelo considere toda a sequência de dados simultaneamente. Isso elimina a necessidade do uso de recorrência ou vetores ocultos. Em vez disso, a codificação posicional mantém informações sobre a posição de cada elemento na sequência. especialmente em tarefas de PLN, porque eles podem lidar com dependências de longo alcance com mais eficiência. Além disso, oferecem maior escalabilidade e eficiência do que as RNNs. As
+
+De maneira geral, os transformadores substituíram as RNNs em muitas aplicações, RNNs ainda são úteis em certos contextos, especialmente onde o tamanho do modelo e a eficiência computacional são mais críticos do que a captura de interações de longa distância.
+
+## Transformadores vs. CNNs
+
+Redes neurais convolucionais (CNNs) são projetadas para dados estruturados em grade, como imagens, onde hierarquias espaciais e localidade são fundamentais. Elas utilizam camadas convolucionais para aplicar filtros na entrada, capturando padrões locais através destas visões filtradas. Por exemplo, no processamento de imagens, as camadas iniciais podem detectar bordas ou texturas, e as camadas mais profundas reconhecem estruturas mais complexas, como formas ou objetos.
+
+Os transformadores foram projetados principalmente para lidar com dados sequenciais e não conseguiam processar imagens. Os modelos de transformadores de visão atuais processam imagens ao convertê-las em um formato sequencial. No entanto, as CNNs continuam sendo uma opção altamente eficaz e eficiente para muitas aplicações práticas de visão computacional.
+
+## Quais são os tipos de modelos de transformadores que existem?
+
+Os transformadores evoluíram e hoje apresentam uma variedade diversificada de arquiteturas. A seguir estão alguns exemplos de modelos de transformadores.
+
+## Transformadores bidirecionais
+
+Os modelos BERT (representações de codificador bidirecional a partir de transformadores) modificam a arquitetura base para processar palavras em relação a todas as outras em uma frase, em vez de isoladamente. Tecnicamente, ele emprega um mecanismo chamado modelo de linguagem mascarada bidirecional (MLM). Durante o pré-treinamento, o BERT mascara aleatoriamente uma porcentagem dos tokens de entrada, e depois faz previsões desses tokens mascarados usando o contexto ao redor. O aspecto bidirecional vem do fato de que o BERT leva em consideração as sequências de tokens da esquerda para a direita e da direita para a esquerda, em ambas as camadas, para uma maior compreensão.
+
+## Transformadores generativos pré-treinados
+
+Os modelos GPT são baseados em decodificadores transformadores sobrepostos, pré-treinados em extensos conjuntos de textos com o uso de técnicas de modelagem linguística. Eles são autorregressivos, ou seja, preveem o próximo valor em uma sequência com base em todos os valores anteriores. Usando mais de 175 bilhões de parâmetros, os modelos GPT podem gerar sequências de texto ajustadas para estilo e tom. Os modelos GPT têm sido um catalisador na pesquisa de IA, visando a obtenção da inteligência artificial geral. Isso significa que as organizações podem alcançar novos níveis de produtividade enquanto reinventam suas aplicações e experiências de clientes. Transformadores bidirecionais e autorregressivos Um transformador bidirecional e autorregressivo (BART) é um tipo de modelo de transformador que combina propriedades bidirecionais e autorregressivas. É como uma mistura do codificador bidirecional do BERT e do decodificador autorregressivo do GPT. Todas as sequências de entrada são lidas de uma só vez e atua de maneira bidirecional, como o BERT. No entanto, gera um token por vez na sequência de saída, condicionado aos tokens gerados anteriormente e à entrada fornecida pelo codificador. Transformadores para tarefas multimodais Modelos de transformadores multimodais, como ViLBERT e VisualBERT, são projetados para lidar com vários tipos de dados de entrada, geralmente texto e imagens. Ampliando a arquitetura do transformador, esses modelos incorporam redes de fluxo duplo que analisam as informações visuais e textuais de forma independente, antes de combiná-las. Esse design permite que o modelo aprenda representações intermodais. Por exemplo, o ViLBERT emprega camadas transformadoras com co-atenção, possibilitando a interação entre os fluxos distintos. Isso é fundamental em cenários onde é necessário compreender a relação entre texto e imagens, como em tarefas visuais de resposta a perguntas. Transformadores de visão Os transformadores de visão (ViT) reutilizam a arquitetura do transformador para tarefas de classificação de imagens. Em vez de processar uma imagem como uma grade de pixels, os dados da imagem são analisados como uma sequência de fragmentos de tamanho fixo, semelhante à forma como as palavras são tratadas em uma frase. Cada fragmento é nivelado, incorporado linearmente e, em seguida, processado sequencialmente pelo codificador de transformador padrão. Incorporações posicionais são adicionadas para manter a integridade das informações espaciais. Essa abordagem de autoatenção global permite que o modelo capture conexões entre quaisquer pares de fragmentos, independentemente de suas posições.
+
+## FONTE: https://aws.amazon.com/pt/what-is/transformers-in-artificial-intelligence/

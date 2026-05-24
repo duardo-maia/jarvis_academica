@@ -1,3 +1,0 @@
-Python é uma linguagem de programação.
-ChromaDB é um banco vetorial.
-Vetores são usados em IA e busca semântica.
