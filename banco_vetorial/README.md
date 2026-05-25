@@ -2,6 +2,23 @@
 
 Módulo responsável por indexar PDFs acadêmicos e recuperar trechos relevantes usando busca híbrida (semântica + léxica). É utilizado pelo Jarvis quando o usuário faz perguntas sobre os materiais de estudo.
 
+## Documentos Indexados
+
+Os 10 documentos atualmente indexados cobrem os seguintes tópicos:
+
+| # | Tema |
+|---|---|
+| 1 | Embedding |
+| 2 | PLN (Processamento de Linguagem Natural) |
+| 3 | RAG (Retrieval-Augmented Generation) |
+| 4 | Banco Vetorial |
+| 5 | Transformers |
+| 6 | LLM (Large Language Models) |
+| 7 | Quarto Chinês |
+| 8 | Viés da IA |
+| 9 | Deep Learning |
+| 10 | Aprendizado de Máquina |
+
 ## Estrutura
 
 ```

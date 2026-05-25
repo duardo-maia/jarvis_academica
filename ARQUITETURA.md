@@ -1,13 +1,14 @@
-# Arquitetura do Projeto — Jarvis Acadêmica
+# Arquitetura do Projeto — Jarvis — Assistente Acadêmico
 
 ## Visão Geral
 
-O **Jarvis Acadêmica** é um assistente de IA com interface web que combina dois domínios:
+O **Jarvis** é um assistente de IA com interface web que combina três domínios:
 
-- **Agenda acadêmica**: gerenciamento de tarefas, eventos, contatos e lembretes via banco de dados relacional.
+- **Agenda acadêmica**: consulta de tarefas, eventos, contatos e lembretes via banco de dados relacional.
 - **Base de conhecimento**: consulta a materiais de estudo (PDFs sobre IA) via busca híbrida em banco vetorial.
+- **Gerenciamento de tarefas**: CRUD visual de tarefas com prioridade e status na aba "Lista de Tarefas".
 
-O usuário interage por uma interface Streamlit com duas abas: **Chat** (conversa com o agente) e **Lista de Tarefas** (CRUD visual).
+O usuário interage por uma interface Streamlit com duas abas: **Chat** (conversa com o agente) e **Lista de Tarefas** (gerenciamento visual).
 
 ---
 
@@ -42,7 +43,7 @@ ia/
 
 ---
 
-## Fluxo de uma Pergunta
+## Fluxo de uma Pergunta (Chat)
 
 ```
 Usuário (Streamlit)
@@ -50,10 +51,10 @@ Usuário (Streamlit)
        ▼
    agente.py  ── Loop ReAct (máx. 8 passos)
        │
-       ├── Pergunta sobre agenda/tarefas?
+       ├── Pergunta sobre agenda/eventos?
        │         └── Gera SQL → executar_sql() → SQLite
        │
-       └── Pergunta sobre teoria/documentos?
+       └── Pergunta sobre IA/documentos?
                  └── [BUSCAR_DOCS] → consultar_documentos()
                            └── Busca híbrida (BM25 + ChromaDB)
                                      └── Chunks relevantes
@@ -61,6 +62,8 @@ Usuário (Streamlit)
        ▼
   RESPOSTA FINAL → Streamlit exibe a resposta + chunks usados
 ```
+
+> Tarefas são gerenciadas exclusivamente pela aba **Lista de Tarefas** — o chat foca em consultas de agenda e conteúdos de IA.
 
 ---
 

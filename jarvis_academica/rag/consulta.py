@@ -10,7 +10,7 @@ if _caminho_recuperacao not in sys.path:
 _gerar_resposta = None
 
 
-def consultar_documentos(pergunta: str) -> str:
+def consultar_documentos(pergunta: str) -> tuple:
     """Busca nos documentos acadêmicos indexados e retorna uma resposta gerada pelo modelo."""
     global _gerar_resposta
     if _gerar_resposta is None:

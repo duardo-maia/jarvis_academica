@@ -12,7 +12,7 @@ from database.operacoes import (
     deletar_tarefa,
 )
 
-st.set_page_config(page_title="Jarvis Acadêmica", page_icon="J", layout="wide")
+st.set_page_config(page_title="Jarvis — Assistente Acadêmico", page_icon="J", layout="wide")
 
 # ── Estilos ───────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -36,12 +36,20 @@ st.markdown("""
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.header("📎 Faça Upload de Arquivos")
-    st.file_uploader(
-        "Upload de PDF sobre IA para consulta",
-        type=["pdf"],
-        accept_multiple_files=True,
-    )
+    st.header("📚 Conteúdos disponíveis")
+    st.caption("Pergunte ao Jarvis sobre:")
+    st.markdown("""
+- Embedding
+- PLN (Processamento de Linguagem Natural)
+- RAG (Retrieval-Augmented Generation)
+- Banco Vetorial
+- Transformers
+- LLM (Large Language Models)
+- Quarto Chinês
+- Viés da IA
+- Deep Learning
+- Aprendizado de Máquina
+""")
 
 # ── Header ────────────────────────────────────────────────────────────────────
 st.title("🤖 Jarvis — Assistente Acadêmico")
@@ -112,6 +120,7 @@ with aba_tarefas:
     if st.button("➕ Adicionar nova tarefa"):
         st.session_state.show_add_form = not st.session_state.show_add_form
 
+    submitted = False
     if st.session_state.show_add_form:
         with st.form("form_add_tarefa", clear_on_submit=True):
             col1, col2 = st.columns([3, 1])

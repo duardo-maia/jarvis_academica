@@ -1,6 +1,6 @@
-# JARVIS Acadêmica — Assistente Inteligente para Estudantes
+# Jarvis — Assistente Acadêmico
 
-Assistente pessoal acadêmico desenvolvido como trabalho prático da disciplina. O sistema combina gerenciamento de agenda via linguagem natural com consulta a materiais de estudo usando RAG.
+Assistente pessoal acadêmico desenvolvido como trabalho prático da disciplina. O sistema combina gerenciamento de agenda via linguagem natural, consulta a materiais de estudo sobre IA usando RAG, e uma interface visual para gerenciamento de tarefas.
 
 ## Estrutura do Repositório
 
@@ -52,7 +52,14 @@ streamlit run app.py
 
 O navegador abrirá automaticamente em `http://localhost:8501`.
 
-> O banco de dados SQLite é criado automaticamente na primeira execução. O banco vetorial precisa ser indexado antes do uso — veja o README em `banco_vetorial/`.
+> O banco de dados SQLite é criado automaticamente na primeira execução. O banco vetorial já está indexado com os 10 documentos incluídos no repositório.
+
+## Interface
+
+O app possui duas abas:
+
+- **Chat com Jarvis** — converse para consultar sua agenda (eventos, contatos) e tirar dúvidas sobre os conteúdos de IA indexados
+- **Lista de Tarefas** — adicione, conclua e remova tarefas visualmente
 
 ## Tecnologias
 

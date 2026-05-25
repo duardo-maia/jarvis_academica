@@ -1,6 +1,6 @@
-# Jarvis Acadêmica — Módulo do Agente
+# Jarvis — Módulo do Agente
 
-Agente de IA com interface web para gerenciar agenda acadêmica e consultar materiais de estudo. O agente decide automaticamente se deve consultar o banco de dados (tarefas, eventos) ou buscar nos documentos indexados.
+Agente de IA com interface web para consultar agenda acadêmica e conteúdos sobre Inteligência Artificial. O agente decide automaticamente se deve consultar o banco de dados (eventos, contatos) ou buscar nos documentos indexados.
 
 ## Estrutura
 
@@ -38,29 +38,29 @@ Para resetar o banco, basta apagar o arquivo `database/agenda_jarvis.db` e reini
 
 O agente usa um loop ReAct manual: recebe a pergunta, decide qual ferramenta usar, executa e formula a resposta.
 
-- **SQL** → consultas de agenda, tarefas, eventos e contatos
+- **SQL** → consultas de agenda, eventos e contatos
 - **`[BUSCAR_DOCS]`** → perguntas sobre IA, machine learning e os materiais indexados
 
 ## Como Usar
 
 ### Aba Chat
 
-Exemplos de perguntas para o agente:
+Use o chat para consultar sua agenda ou tirar dúvidas sobre os conteúdos de IA indexados.
 
-**Agenda e tarefas:**
-- `Quais são minhas tarefas pendentes?`
-- `Adiciona a tarefa Estudar Álgebra com prioridade alta`
+**Agenda:**
 - `Quais eventos tenho essa semana?`
 - `Cria um evento Reunião de Projeto no dia 10/06 às 14h`
-- `Marca a tarefa 3 como concluída`
+- `Quais são meus contatos?`
 
-**Materiais de estudo:**
-- `O que é RAG?`
-- `Explica como funciona um embedding`
+**Conteúdos de IA:**
+- `O que é um embedding?`
+- `Explica como funciona o RAG`
 - `Qual a diferença entre LLM e um modelo de linguagem tradicional?`
+- `Me explica como funciona um transformer`
 
 ### Aba Lista de Tarefas
 
-- Clique em **Adicionar nova tarefa** para criar com título, descrição e prioridade
+- Clique em **➕ Adicionar nova tarefa** para abrir o formulário (clique novamente para fechar)
+- Preencha título, descrição opcional e prioridade, depois clique em **✅ Salvar tarefa**
 - Filtre por **Pendentes**, **Concluídas** ou **Todas**
-- Use os botões **Concluir**, **Reabrir** e **Deletar** em cada tarefa
+- Use os ícones em cada tarefa: **✔** para concluir, **↩** para reabrir, **🗑** para deletar
