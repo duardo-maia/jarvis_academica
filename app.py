@@ -38,14 +38,14 @@ st.markdown("""
 with st.sidebar:
     st.header("📎 Faça Upload de Arquivos")
     st.file_uploader(
-        "Upload de PDF para ajuda",
+        "Upload de PDF sobre IA para consulta",
         type=["pdf"],
         accept_multiple_files=True,
     )
 
 # ── Header ────────────────────────────────────────────────────────────────────
-st.title("🤖 Jarvis — Assistente Acadêmica")
-st.caption("Agenda inteligente + Lista de Tarefas")
+st.title("🤖 Jarvis — Assistente Acadêmico")
+st.caption("Organize sua agenda, consulte eventos e explore conteúdos sobre Inteligência Artificial")
 
 # ── Abas ─────────────────────────────────────────────────────────────────────
 aba_chat, aba_tarefas = st.tabs(["💬 Chat com Jarvis", "✅ Lista de Tarefas"])
@@ -58,29 +58,45 @@ if "historico" not in st.session_state:
     st.session_state.historico = []
 
 with aba_chat:
-    st.subheader("Converse com a Jarvis")
-    st.info(
-        "Você pode perguntar sobre eventos, contatos, lembretes e tarefas. "
-        "Exemplos: *'Quais são minhas tarefas pendentes?'*, "
-        "*'Adiciona a tarefa Estudar Álgebra com prioridade alta'*, "
-        "*'Quais eventos tenho essa semana?'*"
-    )
+    st.subheader("Converse com Jarvis")
 
-    # Exibe o histórico de mensagens
+    if not st.session_state.historico:
+        st.info(
+            "Você pode consultar sua agenda e tirar dúvidas sobre Inteligência Artificial. "
+            "Para gerenciar tarefas, use a aba **Lista de Tarefas**. "
+            "Exemplos: *'Quais eventos tenho essa semana?'*, "
+            "*'O que é um embedding?'*, "
+            "*'Me explica como funciona um transformer'*"
+        )
+
     for msg in st.session_state.historico:
-        st.chat_message(msg["role"]).write(msg["content"])
+        with st.chat_message(msg["role"]):
+            st.write(msg["content"])
+            chunks = msg.get("chunks", [])
+            if chunks:
+                with st.expander(f"📄 Ver trechos usados ({len(chunks)} chunk{'s' if len(chunks) > 1 else ''})"):
+                    for i, c in enumerate(chunks, 1):
+                        fonte = c["id"].rsplit("-chunk-", 1)[0]
+                        st.markdown(f"**{i}. {fonte}** — score: `{c['score']:.3f}`")
+                        st.caption(c["text"][:400] + ("..." if len(c["text"]) > 400 else ""))
+                        if i < len(chunks):
+                            st.divider()
 
-    question = st.chat_input("Como posso ajudar?")
+    with st.form("chat_form", clear_on_submit=True):
+        col_input, col_btn = st.columns([9, 1])
+        with col_input:
+            pergunta = st.text_input("", placeholder="Como posso ajudar?", label_visibility="collapsed")
+        with col_btn:
+            submitted = st.form_submit_button("Enviar", use_container_width=True)
 
-    if question:
-        st.session_state.historico.append({"role": "user", "content": question})
-        st.chat_message("user").write(question)
-
+    if submitted and pergunta.strip():
+        st.session_state.historico.append({"role": "user", "content": pergunta})
         with st.spinner("Jarvis está pensando..."):
-            response = rodar_agente(question)
-
-        st.session_state.historico.append({"role": "ai", "content": response})
-        st.chat_message("ai").write(response)
+            resultado = rodar_agente(pergunta)
+        response = resultado["resposta"]
+        chunks   = resultado["chunks"]
+        st.session_state.historico.append({"role": "ai", "content": response, "chunks": chunks})
+        st.rerun()
 
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -90,34 +106,42 @@ with aba_tarefas:
     st.subheader("📋 Minhas Tarefas")
 
     # ── Formulário para adicionar tarefa ─────────────────────────────────────
-    with st.expander("➕ Adicionar nova tarefa", expanded=False):
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            novo_titulo = st.text_input("Título da tarefa", key="novo_titulo")
-            nova_descricao = st.text_area("Descrição (opcional)", key="nova_descricao", height=80)
-        with col2:
-            nova_prioridade = st.selectbox(
-                "Prioridade",
-                options=["baixa", "normal", "alta"],
-                index=1,
-                key="nova_prioridade",
-            )
-            st.write("")
-            st.write("")
-            if st.button("✅ Salvar tarefa", use_container_width=True):
-                if novo_titulo.strip():
-                    ok = adicionar_tarefa(
-                        titulo=novo_titulo.strip(),
-                        descricao=nova_descricao.strip() or None,
-                        prioridade=nova_prioridade,
-                    )
-                    if ok:
-                        st.success("Tarefa adicionada com sucesso!")
-                        st.rerun()
-                    else:
-                        st.error("Erro ao adicionar a tarefa.")
+    if "show_add_form" not in st.session_state:
+        st.session_state.show_add_form = False
+
+    if st.button("➕ Adicionar nova tarefa"):
+        st.session_state.show_add_form = not st.session_state.show_add_form
+
+    if st.session_state.show_add_form:
+        with st.form("form_add_tarefa", clear_on_submit=True):
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                novo_titulo = st.text_input("Título da tarefa")
+                nova_descricao = st.text_area("Descrição (opcional)", height=80)
+            with col2:
+                nova_prioridade = st.selectbox(
+                    "Prioridade",
+                    options=["baixa", "normal", "alta"],
+                    index=1,
+                )
+                st.write("")
+                st.write("")
+                submitted = st.form_submit_button("✅ Salvar tarefa", use_container_width=True)
+
+        if submitted:
+            if novo_titulo.strip():
+                ok = adicionar_tarefa(
+                    titulo=novo_titulo.strip(),
+                    descricao=nova_descricao.strip() or None,
+                    prioridade=nova_prioridade,
+                )
+                if ok:
+                    st.session_state.show_add_form = False
+                    st.rerun()
                 else:
-                    st.warning("O título não pode estar vazio.")
+                    st.error("Erro ao adicionar a tarefa.")
+            else:
+                st.warning("O título não pode estar vazio.")
 
     # ── Filtro de status ──────────────────────────────────────────────────────
     filtro = st.radio(
@@ -141,7 +165,7 @@ with aba_tarefas:
             icone = icone_prioridade.get(t["prioridade"], "⚪")
 
             with st.container():
-                col_info, col_acoes = st.columns([5, 1])
+                col_info, col_acoes = st.columns([7, 1])
 
                 with col_info:
                     titulo_html = (
@@ -163,17 +187,20 @@ with aba_tarefas:
                     )
 
                 with col_acoes:
-                    if not concluida:
-                        if st.button("✔ Concluir", key=f"concluir_{t['id']}", use_container_width=True):
-                            concluir_tarefa(t["id"])
+                    b1, b2 = st.columns(2)
+                    with b1:
+                        if not concluida:
+                            if st.button("✔", key=f"concluir_{t['id']}", help="Concluir tarefa", use_container_width=True):
+                                concluir_tarefa(t["id"])
+                                st.rerun()
+                        else:
+                            if st.button("↩", key=f"desconcluir_{t['id']}", help="Reabrir tarefa", use_container_width=True):
+                                desconcluir_tarefa(t["id"])
+                                st.rerun()
+                    with b2:
+                        if st.button("🗑", key=f"deletar_{t['id']}", help="Deletar tarefa", use_container_width=True):
+                            deletar_tarefa(t["id"])
                             st.rerun()
-                    else:
-                        if st.button("↩ Reabrir", key=f"desconcluir_{t['id']}", use_container_width=True):
-                            desconcluir_tarefa(t["id"])
-                            st.rerun()
-                    if st.button("🗑 Deletar", key=f"deletar_{t['id']}", use_container_width=True):
-                        deletar_tarefa(t["id"])
-                        st.rerun()
 
     # ── Rodapé de contagem ────────────────────────────────────────────────────
     todas = listar_tarefas()

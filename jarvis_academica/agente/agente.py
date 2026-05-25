@@ -58,11 +58,12 @@ Para buscar nos documentos acadêmicos, use EXATAMENTE este formato:
 
 
 # ── Loop ReAct manual ─────────────────────────────────────────────────────────
-def rodar_agente(pergunta: str, max_passos: int = 8) -> str:
+def rodar_agente(pergunta: str, max_passos: int = 8) -> dict:
     mensagens = [
         {"role": "system", "content": SYSTEM},
         {"role": "user",   "content": pergunta},
     ]
+    chunks_encontrados = []
 
     for passo in range(max_passos):
         resposta = client.chat.completions.create(
@@ -75,7 +76,8 @@ def rodar_agente(pergunta: str, max_passos: int = 8) -> str:
 
         if "RESPOSTA FINAL:" in conteudo:
             idx = conteudo.index("RESPOSTA FINAL:")
-            return conteudo[idx + len("RESPOSTA FINAL:"):].strip()
+            texto = conteudo[idx + len("RESPOSTA FINAL:"):].strip()
+            return {"resposta": texto, "chunks": chunks_encontrados}
 
         match_sql = re.search(r"```sql\s*(.*?)```", conteudo, re.DOTALL | re.IGNORECASE)
         match_docs = re.search(r"\[BUSCAR_DOCS:\s*(.*?)\]", conteudo, re.DOTALL)
@@ -89,10 +91,11 @@ def rodar_agente(pergunta: str, max_passos: int = 8) -> str:
         elif match_docs:
             consulta = match_docs.group(1).strip()
             print(f"\n[Jarvis buscando documentos]\n{consulta}\n")
-            resultado = consultar_documentos(consulta)
-            print(f"[Resultado]\n{resultado}\n")
-            mensagens.append({"role": "user", "content": f"Resultado da busca nos documentos:\n{resultado}"})
+            resultado_texto, chunks = consultar_documentos(consulta)
+            chunks_encontrados.extend(chunks)
+            print(f"[Resultado]\n{resultado_texto}\n")
+            mensagens.append({"role": "user", "content": f"Resultado da busca nos documentos:\n{resultado_texto}"})
         else:
-            return conteudo.strip()
+            return {"resposta": conteudo.strip(), "chunks": chunks_encontrados}
 
-    return "Não consegui concluir a tarefa dentro do número máximo de passos."
+    return {"resposta": "Não consegui concluir a tarefa dentro do número máximo de passos.", "chunks": []}

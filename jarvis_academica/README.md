@@ -1,89 +1,66 @@
-# Jarvis Acadêmica
+# Jarvis Acadêmica — Módulo do Agente
 
-Assistente de agenda inteligente com interface web. Permite conversar com um agente de IA para gerenciar eventos, contatos, lembretes e tarefas acadêmicas, com visualização e gerenciamento direto pela interface.
+Agente de IA com interface web para gerenciar agenda acadêmica e consultar materiais de estudo. O agente decide automaticamente se deve consultar o banco de dados (tarefas, eventos) ou buscar nos documentos indexados.
 
-## Funcionalidades
-
-- **Chat com Jarvis** — converse em linguagem natural para criar eventos, consultar agenda, gerenciar contatos e tarefas
-- **Lista de Tarefas** — adicione, conclua e delete tarefas com prioridade (alta, normal, baixa) diretamente pela interface
-- **Banco de dados local** — tudo salvo em SQLite, sem necessidade de servidor externo
-
-## Estrutura do projeto
+## Estrutura
 
 ```
-JarvisAcademica/
-├── app.py                    # Interface web (Streamlit)
-├── agent_tarefas_agenda.py   # Agente de IA + funções do banco
-├── criar_agenda.py           # Script para criar o banco de dados
-├── agenda.sql                # Estrutura das tabelas e dados de exemplo
-├── agenda_jarvis.db          # Banco de dados (gerado pelo criar_agenda.py)
-└── requirements.txt          # Dependências
+jarvis_academica/
+├── agente/
+│   ├── __init__.py
+│   └── agente.py        # Loop ReAct: SQL para agenda, BUSCAR_DOCS para documentos
+├── database/
+│   ├── __init__.py
+│   ├── operacoes.py     # Funções de acesso ao SQLite
+│   ├── schema.sql       # Estrutura das tabelas e dados de exemplo
+│   └── agenda_jarvis.db # Banco gerado automaticamente na primeira execução
+└── rag/
+    ├── __init__.py
+    └── consulta.py      # Wrapper que conecta ao banco vetorial
 ```
 
-## Pré-requisitos
+## Banco de Dados
 
-- Python 3.10 ou superior
-- Chave de acesso à API Gemma (`GEMMA_KEY`)
+O banco SQLite é criado automaticamente quando o app é iniciado pela primeira vez — não é necessário rodar nenhum script de setup.
 
-## Instalação
+As tabelas disponíveis são:
 
-**1. Crie o ambiente virtual e instale as dependências:**
+| Tabela | Conteúdo |
+|---|---|
+| `tarefas` | Título, descrição, prioridade e status |
+| `eventos` | Título, data, horário, local e contato vinculado |
+| `contatos` | Nome, telefone, e-mail e observações |
+| `lembretes` | Alertas associados a eventos |
 
-```bash
-python -m venv .venv
-source .venv/bin/activate        # Linux/Mac
-# ou
-.venv\Scripts\activate           # Windows
+Para resetar o banco, basta apagar o arquivo `database/agenda_jarvis.db` e reiniciar o app.
 
-pip install streamlit langchain langchain-openai python-dotenv
-```
+## Como o Agente Funciona
 
-**2. Crie o arquivo `.env` na raiz do projeto com a chave da API:**
+O agente usa um loop ReAct manual: recebe a pergunta, decide qual ferramenta usar, executa e formula a resposta.
 
-```
-GEMMA_KEY=sua_chave_aqui
-```
+- **SQL** → consultas de agenda, tarefas, eventos e contatos
+- **`[BUSCAR_DOCS]`** → perguntas sobre IA, machine learning e os materiais indexados
 
-**3. Crie o banco de dados:**
-
-```bash
-python criar_agenda.py
-```
-
-Esse comando cria as tabelas de contatos, eventos, lembretes e tarefas, e insere alguns dados de exemplo.
-
-## Executando
-
-```bash
-streamlit run app.py
-```
-
-O navegador abrirá automaticamente em `http://localhost:8501`.
-
-## Como usar
+## Como Usar
 
 ### Aba Chat
 
-Digite perguntas ou comandos em linguagem natural. Exemplos:
+Exemplos de perguntas para o agente:
 
+**Agenda e tarefas:**
 - `Quais são minhas tarefas pendentes?`
 - `Adiciona a tarefa Estudar Álgebra com prioridade alta`
 - `Quais eventos tenho essa semana?`
 - `Cria um evento Reunião de Projeto no dia 10/06 às 14h`
+- `Marca a tarefa 3 como concluída`
+
+**Materiais de estudo:**
+- `O que é RAG?`
+- `Explica como funciona um embedding`
+- `Qual a diferença entre LLM e um modelo de linguagem tradicional?`
 
 ### Aba Lista de Tarefas
 
-- Clique em **Adicionar nova tarefa** para criar uma tarefa com título, descrição e prioridade
-- Use os filtros para ver tarefas **Pendentes**, **Concluídas** ou **Todas**
-- Clique em **Concluir** ou **Deletar** em cada tarefa
-
-## Banco de dados
-
-As tabelas criadas pelo `agenda.sql` são:
-
-| Tabela | Descrição |
-|---|---|
-| `contatos` | Nome, telefone, e-mail e observações |
-| `eventos` | Título, data, horário, local e contato vinculado |
-| `lembretes` | Alertas associados a eventos |
-| `tarefas` | Título, descrição, prioridade e status |
+- Clique em **Adicionar nova tarefa** para criar com título, descrição e prioridade
+- Filtre por **Pendentes**, **Concluídas** ou **Todas**
+- Use os botões **Concluir**, **Reabrir** e **Deletar** em cada tarefa

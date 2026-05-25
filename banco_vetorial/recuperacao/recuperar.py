@@ -123,6 +123,14 @@ def gerar_resposta(pergunta, k=10, alpha=0.6):
     candidatos        = recuperar_hibrido(pergunta, k=k, alpha=alpha)
     chunks_relevantes = diversificar(candidatos)
 
+    # Exibe os chunks recuperados no log para verificação
+    print(f"\n[Chunks recuperados — {len(chunks_relevantes)} trechos]")
+    for i, c in enumerate(chunks_relevantes, 1):
+        fonte = c["id"].rsplit("-chunk-", 1)[0]
+        print(f"\n  {i}. {fonte}  (score: {c['score']:.3f})")
+        print(f"     {c['text'][:300].replace(chr(10), ' ')}...")
+    print()
+
     # Agrupa os trechos por documento de origem
     trechos = []
     for c in chunks_relevantes:
@@ -148,7 +156,7 @@ Resposta:"""
         messages=[{"role": "user", "content": prompt}],
     )
 
-    return resposta.choices[0].message.content
+    return resposta.choices[0].message.content, chunks_relevantes
 
 
 # ── Teste 
@@ -156,6 +164,7 @@ Resposta:"""
 if __name__ == "__main__":
     pergunta = input("Digite sua pergunta: ")
 
+    resposta, _ = gerar_resposta(pergunta)
     print()
     print("── Resposta ──")
-    print(gerar_resposta(pergunta))
+    print(resposta)

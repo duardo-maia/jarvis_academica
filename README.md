@@ -1,48 +1,33 @@
-# JARVIS Acadêmico — Assistente Inteligente para Estudantes
+# JARVIS Acadêmica — Assistente Inteligente para Estudantes
 
-Assistente pessoal acadêmico desenvolvido como trabalho prático da disciplina. O sistema utiliza técnicas modernas de IA para ajudar estudantes a organizar rotinas e melhorar o desempenho nos estudos.
-
-## Visão Geral
-
-O JARVIS integra três pilares principais:
-
-- **RAG** (Retrieval-Augmented Generation) — responde perguntas com base em materiais de estudo
-- **Tool Calling** — a LLM decide dinamicamente quais ferramentas acionar
-- **LLM** — modelo Gemma 12B como núcleo de raciocínio e geração de respostas
-
-## Funcionalidades
-
-| # | Funcionalidade | Entrega |
-|---|---|---|
-| 3.1 | Consulta a materiais de estudo via RAG | Trabalho 1 |
-| 3.2 | Agenda acadêmica (aulas, provas, eventos) | Trabalho 1 |
-| 3.3 | Lista de tarefas | Trabalho 1 |
-| 3.4 | Planejamento de estudos integrado | Trabalho 2 |
-
-## Tecnologias
-
-- Python 3.10+
-- Gemma 12B (via API compatível com OpenAI)
-- ChromaDB — banco vetorial para o RAG
-- LangChain ou equivalente — orquestração de pipeline
+Assistente pessoal acadêmico desenvolvido como trabalho prático da disciplina. O sistema combina gerenciamento de agenda via linguagem natural com consulta a materiais de estudo usando RAG.
 
 ## Estrutura do Repositório
 
 ```
 ia/
-├── banco_vetorial/         # Módulo de busca semântica com ChromaDB
-│   ├── docs/
-│   │   └── documentos.txt # Documentos indexados no banco vetorial
-│   ├── tests/
-│   │   └── teste.ipynb    # Notebook para experimentos
-│   └── main.py            # Carrega documentos no ChromaDB e consulta
-├── .gitignore
-└── README.md
+├── app.py                  # Entrada principal — interface web (Streamlit)
+├── requirements.txt        # Dependências do projeto
+├── .env                    # Chaves de API (não versionado)
+│
+├── jarvis_academica/       # Módulo do agente e banco de dados
+│   ├── agente/             # Lógica do agente de IA (loop ReAct)
+│   ├── database/           # Banco SQLite: tarefas, eventos, contatos
+│   └── rag/                # Integração com o banco vetorial
+│
+└── banco_vetorial/         # Módulo de indexação e busca semântica
+    ├── docs/               # PDFs e markdowns dos materiais
+    ├── chunks/             # Divisão dos documentos em chunks
+    ├── indexacao/          # Indexação com ChromaDB + BM25
+    └── recuperacao/        # Busca híbrida e geração de resposta
 ```
 
-> A estrutura será expandida conforme o desenvolvimento avança.
+## Pré-requisitos
 
-## Como Executar
+- Python 3.10+
+- Chave de acesso à API Gemma (`GEMMA_KEY`)
+
+## Instalação
 
 ```bash
 # Crie e ative o ambiente virtual
@@ -51,15 +36,32 @@ source .venv/bin/activate
 
 # Instale as dependências
 pip install -r requirements.txt
-
-# Execute o módulo do banco vetorial
-python banco_vetorial/main.py
 ```
 
-## IAs Utilizadas no Desenvolvimento
+Crie o arquivo `.env` na raiz com a chave da API:
 
-- Claude Code — geração de documentacao e revisão do código
+```
+GEMMA_KEY=sua_chave_aqui
+```
+
+## Executando
+
+```bash
+streamlit run app.py
+```
+
+O navegador abrirá automaticamente em `http://localhost:8501`.
+
+> O banco de dados SQLite é criado automaticamente na primeira execução. O banco vetorial precisa ser indexado antes do uso — veja o README em `banco_vetorial/`.
+
+## Tecnologias
+
+- **Streamlit** — interface web
+- **Gemma 12B** — modelo de linguagem via API compatível com OpenAI
+- **ChromaDB** — banco vetorial para busca semântica
+- **BM25** — busca léxica para recuperação híbrida
+- **SQLite** — armazenamento de agenda e tarefas
 
 ---
 
-Trabalho em dupla — Entrega dividida em dois trabalhos.
+Trabalho em dupla — disciplina de Inteligência Artificial.
