@@ -8,7 +8,7 @@ Assistente pessoal acadêmico desenvolvido como trabalho prático da disciplina.
 ia/
 ├── app.py                  # Entrada principal — interface web (Streamlit)
 ├── requirements.txt        # Dependências do projeto
-├── .env                    # Chaves de API (não versionado)
+├── .env.example            # Exemplos de chaves de API
 │
 ├── jarvis_academica/       # Módulo do agente e banco de dados
 │   ├── agente/             # Lógica do agente de IA (loop ReAct)
@@ -16,10 +16,11 @@ ia/
 │   └── rag/                # Integração com o banco vetorial
 │
 └── banco_vetorial/         # Módulo de indexação e busca semântica
-    ├── docs/               # PDFs e markdowns dos materiais
+    ├── docs/               # PDFs, markdowns e DATASET.md
     ├── chunks/             # Divisão dos documentos em chunks
     ├── indexacao/          # Indexação com ChromaDB + BM25
-    └── recuperacao/        # Busca híbrida e geração de resposta
+    ├── recuperacao/        # Busca híbrida e geração de resposta
+    └── data/               # Arquivos internos do ChromaDB (gerado)
 ```
 
 ## Pré-requisitos
@@ -56,9 +57,10 @@ O navegador abrirá automaticamente em `http://localhost:8501`.
 
 ## Interface
 
-O app possui duas abas:
+O app possui uma sidebar e duas abas:
 
-- **Chat com Jarvis** — converse para consultar sua agenda (eventos, contatos) e tirar dúvidas sobre os conteúdos de IA indexados
+- **Sidebar** — lista os 10 tópicos de IA disponíveis para consulta, aberta por padrão
+- **Chat com Jarvis** — converse para consultar sua agenda (eventos, contatos) e tirar dúvidas sobre os conteúdos de IA indexados; sugestões clicáveis na tela inicial facilitam os primeiros testes
 - **Lista de Tarefas** — adicione, conclua e remova tarefas visualmente
 
 ## Tecnologias
