@@ -44,6 +44,14 @@ CREATE TABLE IF NOT EXISTS tarefas (
     data_conclusao DATETIME
 );
 
+-- Tabela de histórico do quiz (active recall)
+CREATE TABLE IF NOT EXISTS historico_quiz (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    topico TEXT NOT NULL,
+    nota INTEGER NOT NULL CHECK(nota BETWEEN 0 AND 10),
+    data_tentativa DATETIME DEFAULT (datetime('now', 'localtime'))
+);
+
 -- =========================================
 -- DADOS EXEMPLO
 -- =========================================
@@ -56,7 +64,13 @@ VALUES
 INSERT INTO eventos (titulo, descricao, data_evento, hora_inicio, hora_fim, local, contato_id)
 VALUES
 ('Reunião do Projeto', 'Discussão do sistema acadêmico', '2026-05-25', '14:00', '16:00', 'UFMS', 1),
-('Corrida Beneficente', 'Organização da corrida da cidade', '2026-06-07', '06:00', '09:00', 'Coxim-MS', 2);
+('Corrida Beneficente', 'Organização da corrida da cidade', '2026-06-07', '06:00', '09:00', 'Coxim-MS', 2),
+('Prova de Banco de Dados', 'Prova da disciplina de Banco de Dados', '2026-06-12', '09:00', '12:00', 'Sala 101', NULL),
+('Aula de Machine Learning', 'Aula sobre algoritmos supervisionados', '2026-06-13', '08:00', '10:00', 'Sala 203', NULL),
+('Reunião de Orientação', 'Reunião com orientador sobre o TCC', '2026-06-15', '15:00', '16:00', 'Sala dos Professores', 1),
+('Aula de Processamento de Linguagem Natural', 'Aula sobre tokenização, embeddings e modelos de linguagem', '2026-06-16', '08:00', '10:00', 'Sala 203', NULL),
+('Monitoria de Programação Web', 'Atendimento de dúvidas da lista 3', '2026-06-17', '14:00', '15:00', 'Lab 2', NULL),
+('Prova de Inteligência Artificial', 'Prova da disciplina de IA: deep learning, LLMs, RAG', '2026-06-20', '09:00', '11:00', 'Sala 101', NULL);
 
 INSERT INTO lembretes (evento_id, data_lembrete)
 VALUES

@@ -4,20 +4,8 @@ Módulo responsável por indexar PDFs acadêmicos e recuperar trechos relevantes
 
 ## Documentos Indexados
 
-Os 10 documentos atualmente indexados cobrem os seguintes tópicos:
-
-| # | Tema |
-|---|---|
-| 1 | Embedding |
-| 2 | PLN (Processamento de Linguagem Natural) |
-| 3 | RAG (Retrieval-Augmented Generation) |
-| 4 | Banco Vetorial |
-| 5 | Transformers |
-| 6 | LLM (Large Language Models) |
-| 7 | Quarto Chinês |
-| 8 | Viés da IA |
-| 9 | Deep Learning |
-| 10 | Aprendizado de Máquina |
+A lista dos 10 documentos indexados, com origem, composição e estratégia de chunking,
+está documentada em [`docs/DATASET.md`](docs/DATASET.md).
 
 ## Estrutura
 
@@ -82,14 +70,9 @@ O script pedirá uma pergunta e retornará a resposta gerada pelo modelo com bas
 
 ## Como Funciona a Busca Híbrida
 
-Para cada pergunta, dois scores são calculados e combinados:
-
-- **BM25** (léxico): pontua chunks pela frequência dos termos da pergunta
-- **ChromaDB** (semântico): pontua chunks pelo significado usando embeddings
-
-Score final: `0.6 × semântico + 0.4 × BM25`
-
-Os chunks recuperados são diversificados (máximo 2 por documento) antes de serem enviados ao modelo para geração da resposta.
+A busca combina scores do ChromaDB (semântico) e do BM25 (léxico), com diversificação
+dos chunks por documento fonte. Detalhes da fórmula e dos pesos estão em
+[ARQUITETURA.md](../ARQUITETURA.md#busca-híbrida).
 
 ## Adicionando Novos Documentos
 

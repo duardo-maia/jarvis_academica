@@ -26,7 +26,7 @@ ia/
 ## Pré-requisitos
 
 - Python 3.10+
-- Chave de acesso à API Gemma (`GEMMA_KEY`)
+- Chave de acesso à API Qwen2.5-14B (`GEMMA_KEY`)
 
 ## Instalação
 
@@ -66,11 +66,20 @@ O app possui uma sidebar e duas abas:
 ## Tecnologias
 
 - **Streamlit** — interface web
-- **Gemma 12B** — modelo de linguagem via API compatível com OpenAI
+- **Qwen2.5-14B-Instruct-AWQ** — modelo de linguagem via API compatível com OpenAI
 - **ChromaDB** — banco vetorial para busca semântica
 - **BM25** — busca léxica para recuperação híbrida
 - **SQLite** — armazenamento de agenda e tarefas
 
+## Avaliação do Sistema e Análise de Erros
+
+- [Avaliação do Sistema](https://docs.google.com/document/d/1B9lGyjpaM8oDmwE8KT9yKC4UHFiahfr9FF_9IT_OjWA/edit?usp=sharing)
+- [Análise de Erros](https://docs.google.com/document/d/1QF7QNUcaRimMyLLR4VC2bqf_i_HslQSA1_tQSPwoG58/edit?usp=sharing)
+
 ---
 
-Trabalho em dupla — disciplina de Inteligência Artificial.
+Trabalho em dupla>:
+Giovana da Silva M. Muhl
+Eduardo Silva 
+
+ — disciplina de Inteligência Artificial.

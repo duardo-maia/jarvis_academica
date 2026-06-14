@@ -1,24 +1,34 @@
-# ── ETAPA 4: Recuperação e Geração (RAG) 
+# ── ETAPA 4: Recuperação e Geração (RAG)
 # Busca híbrida: BM25 (léxica) + ChromaDB (semântica) → resposta com Gemma
 
+import os
 import pickle
+import sys
 import numpy as np
 from pathlib import Path
 
 import chromadb
 from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
+from dotenv import load_dotenv
 from openai import OpenAI
+
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "jarvis_academica"))
+from core.logging_config import get_logger
+
+logger = get_logger(__name__)
+
+load_dotenv()
 
 # Caminhos
 data_path = Path(__file__).parent.parent / "data"
 bm25_path = Path(__file__).parent.parent / "indexacao" / "bm25_index.pkl"
 
-# Configuração do LLM Gemma
-gemma_base_url = "https://llm.liaufms.org/v1/gemma-3-12b-it"
-gemma_api_key  = "Cxt2ftLF7d3mHS2JdiFqB-eSDAQeZvFATPXPs02lV9A"
-gemma_model    = "google/gemma-3-12b-it"
+# Configuração do LLM
+llm_base_url = "https://llm.liaufms.org/v1/qwen2-5-14b-instruct-awq"
+llm_api_key  = os.getenv("GEMMA_KEY")
+llm_model    = "Qwen/Qwen2.5-14B-Instruct-AWQ"
 
-# ── Carrega o índice BM25 
+# ── Carrega o índice BM25
 with open(bm25_path, "rb") as f:
     dados_bm25 = pickle.load(f)
 
@@ -26,7 +36,7 @@ indice_bm25 = dados_bm25["bm25"]
 ids_chunks  = dados_bm25["ids"]
 textos      = dados_bm25["texts"]
 
-# ── Conecta ao ChromaDB e extrai os embeddings 
+# ── Conecta ao ChromaDB e extrai os embeddings
 ef = DefaultEmbeddingFunction()
 
 client_chroma = chromadb.PersistentClient(path=str(data_path))
@@ -36,14 +46,14 @@ collection    = client_chroma.get_collection(name="documentos", embedding_functi
 dados      = collection.get(include=["embeddings"])
 matriz_emb = np.array(dados["embeddings"], dtype="float32")
 
-# Normaliza as linhas 
+# Normaliza as linhas
 normas     = np.linalg.norm(matriz_emb, axis=1, keepdims=True)
 matriz_emb = matriz_emb / np.where(normas == 0, 1, normas)
 
-# ── Client do Gemma 
-gemma = OpenAI(base_url=gemma_base_url, api_key=gemma_api_key)
+logger.info("Índices BM25 e ChromaDB carregados com sucesso (%d chunks).", len(ids_chunks))
 
-print("Índices carregados! Pronto para buscar.\n")
+# ── Client do LLM
+llm = OpenAI(base_url=llm_base_url, api_key=llm_api_key)
 
 
 # ── Funções auxiliares 
@@ -123,13 +133,11 @@ def gerar_resposta(pergunta, k=10, alpha=0.6):
     candidatos        = recuperar_hibrido(pergunta, k=k, alpha=alpha)
     chunks_relevantes = diversificar(candidatos)
 
-    # Exibe os chunks recuperados no log para verificação
-    print(f"\n[Chunks recuperados — {len(chunks_relevantes)} trechos]")
+    # Loga os chunks recuperados para verificação
+    logger.info("Chunks recuperados (%d trechos) para a pergunta: %r", len(chunks_relevantes), pergunta)
     for i, c in enumerate(chunks_relevantes, 1):
         fonte = c["id"].rsplit("-chunk-", 1)[0]
-        print(f"\n  {i}. {fonte}  (score: {c['score']:.3f})")
-        print(f"     {c['text'][:300].replace(chr(10), ' ')}...")
-    print()
+        logger.info("  %d. %s (score: %.3f)", i, fonte, c["score"])
 
     # Agrupa os trechos por documento de origem
     trechos = []
@@ -151,8 +159,8 @@ Trechos:
 Pergunta: {pergunta}
 Resposta:"""
 
-    resposta = gemma.chat.completions.create(
-        model=gemma_model,
+    resposta = llm.chat.completions.create(
+        model=llm_model,
         messages=[{"role": "user", "content": prompt}],
     )
 

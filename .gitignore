@@ -22,6 +22,9 @@ htmlcov/
 # Jupyter
 .ipynb_checkpoints/
 
+# Logs
+logs/
+
 # Variáveis de ambiente
 .env
 .env.*

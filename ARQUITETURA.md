@@ -14,32 +14,7 @@ O usuário interage por uma interface Streamlit com duas abas: **Chat** (convers
 
 ## Estrutura de Módulos
 
-```
-ia/
-├── app.py                      # Entrypoint — interface Streamlit
-├── jarvis_academica/
-│   ├── agente/
-│   │   └── agente.py           # Loop ReAct: orquestra SQL e busca vetorial
-│   ├── database/
-│   │   ├── operacoes.py        # Funções de acesso ao SQLite
-│   │   └── schema.sql          # Definição das tabelas
-│   └── rag/
-│       └── consulta.py         # Wrapper para o banco vetorial
-└── banco_vetorial/
-    ├── docs/
-    │   ├── pdfs/               # PDFs originais
-    │   ├── markdown/           # PDFs convertidos para texto
-    │   └── converter_pdf.py    # Etapa 1: PDF → Markdown
-    ├── chunks/
-    │   ├── chunking.py         # Etapa 2: Markdown → chunks
-    │   └── chunks.json         # Chunks gerados
-    ├── indexacao/
-    │   ├── indexar.py          # Etapa 3: indexação ChromaDB + BM25
-    │   └── bm25_index.pkl      # Índice BM25 serializado
-    ├── recuperacao/
-    │   └── recuperar.py        # Busca híbrida + geração de resposta
-    └── data/                   # Arquivos internos do ChromaDB
-```
+Veja a árvore completa de diretórios no [README.md](README.md) da raiz do projeto.
 
 ---
 
@@ -110,7 +85,7 @@ Criado automaticamente na primeira execução.
 
 ## IAs Utilizadas
 
-### Gemma 3 12B (`google/gemma-3-12b-it`)
+### Qwen2.5-14B-Instruct-AWQ
 - **Papel**: LLM principal do projeto.
 - **Onde é usado**: no agente ReAct (`agente.py`) para interpretar perguntas, decidir qual ferramenta usar e formular respostas; e no módulo de recuperação (`recuperar.py`) para gerar respostas a partir dos chunks recuperados.
 - **Acesso**: API compatível com OpenAI hospedada em `llm.liaufms.org`.
@@ -127,11 +102,4 @@ Criado automaticamente na primeira execução.
 
 ## Tecnologias Principais
 
-| Tecnologia | Uso |
-|---|---|
-| Streamlit | Interface web |
-| SQLite | Banco de dados relacional da agenda |
-| ChromaDB | Banco vetorial para busca semântica |
-| BM25 (rank-bm25) | Busca léxica |
-| OpenAI SDK | Cliente para a API do Gemma |
-| python-dotenv | Gerenciamento de variáveis de ambiente |
+Veja a lista de tecnologias usadas no [README.md](README.md) da raiz do projeto.

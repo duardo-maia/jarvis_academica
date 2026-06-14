@@ -3,6 +3,10 @@
 import sqlite3
 from pathlib import Path
 
+from core.logging_config import get_logger
+
+logger = get_logger(__name__)
+
 DB_PATH     = Path(__file__).parent / "agenda_jarvis.db"
 SCHEMA_PATH = Path(__file__).parent / "schema.sql"
 
@@ -12,7 +16,7 @@ if not DB_PATH.exists():
     conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
     conn.commit()
     conn.close()
-    print("Banco criado com sucesso!")
+    logger.info("Banco criado com sucesso em %s", DB_PATH)
 
 
 def executar_sql(sql: str) -> str:
@@ -41,6 +45,7 @@ def executar_sql(sql: str) -> str:
                 resultado += f"Operação executada com sucesso. Linhas afetadas: {cursor.rowcount}\n"
         return resultado.strip()
     except Exception as e:
+        logger.error("Erro ao executar SQL %r: %s", sql, e)
         return f"ERRO: {e}"
     finally:
         conn.close()
@@ -89,7 +94,8 @@ def adicionar_tarefa(titulo: str, descricao: str = None, prioridade: str = "norm
         )
         conn.commit()
         return True
-    except Exception:
+    except Exception as e:
+        logger.error("Erro ao adicionar tarefa %r: %s", titulo, e)
         return False
     finally:
         conn.close()
@@ -106,7 +112,8 @@ def concluir_tarefa(tarefa_id: int) -> bool:
         )
         conn.commit()
         return cursor.rowcount > 0
-    except Exception:
+    except Exception as e:
+        logger.error("Erro ao concluir tarefa %s: %s", tarefa_id, e)
         return False
     finally:
         conn.close()
@@ -123,7 +130,8 @@ def desconcluir_tarefa(tarefa_id: int) -> bool:
         )
         conn.commit()
         return cursor.rowcount > 0
-    except Exception:
+    except Exception as e:
+        logger.error("Erro ao reabrir tarefa %s: %s", tarefa_id, e)
         return False
     finally:
         conn.close()
@@ -137,7 +145,30 @@ def deletar_tarefa(tarefa_id: int) -> bool:
         cursor.execute("DELETE FROM tarefas WHERE id = ?", (tarefa_id,))
         conn.commit()
         return cursor.rowcount > 0
-    except Exception:
+    except Exception as e:
+        logger.error("Erro ao deletar tarefa %s: %s", tarefa_id, e)
         return False
+    finally:
+        conn.close()
+
+
+def listar_eventos_proximos(dias: int = 7) -> list[dict]:
+    """Retorna eventos entre hoje e hoje + dias, ordenados por data/hora."""
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            """
+            SELECT * FROM eventos
+            WHERE data_evento BETWEEN date('now', 'localtime') AND date('now', 'localtime', ?)
+            ORDER BY data_evento ASC, hora_inicio ASC
+            """,
+            (f"+{dias} days",)
+        )
+        return [dict(r) for r in cursor.fetchall()]
+    except Exception as e:
+        logger.error("Erro ao listar eventos próximos: %s", e)
+        return []
     finally:
         conn.close()

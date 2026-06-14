@@ -23,23 +23,23 @@ jarvis_academica/
 
 O banco SQLite é criado automaticamente quando o app é iniciado pela primeira vez — não é necessário rodar nenhum script de setup.
 
-As tabelas disponíveis são:
-
-| Tabela | Conteúdo |
-|---|---|
-| `tarefas` | Título, descrição, prioridade e status |
-| `eventos` | Título, data, horário, local e contato vinculado |
-| `contatos` | Nome, telefone, e-mail e observações |
-| `lembretes` | Alertas associados a eventos |
+A lista de tabelas e seus conteúdos está documentada em
+[ARQUITETURA.md](../ARQUITETURA.md#banco-de-dados-relacional-sqlite).
 
 Para resetar o banco, basta apagar o arquivo `database/agenda_jarvis.db` e reiniciar o app.
 
 ## Como o Agente Funciona
 
-O agente usa um loop ReAct manual: recebe a pergunta, decide qual ferramenta usar, executa e formula a resposta.
+O agente usa um loop ReAct manual: recebe a pergunta, decide qual ferramenta usar, executa e formula a resposta. As ferramentas disponíveis são:
 
-- **SQL** → consultas de agenda, eventos e contatos
+- **`[CONSULTAR_AGENDA]`** → próximos eventos da agenda
+- **`[LISTAR_TAREFAS]`** → tarefas cadastradas (pendentes, concluídas ou todas)
+- **`[ADICIONAR_TAREFA]`** → cria uma nova tarefa
+- **`[CONCLUIR_TAREFA]`** → marca uma tarefa como concluída
 - **`[BUSCAR_DOCS]`** → perguntas sobre IA, machine learning e os materiais indexados
+- **`[PLANO_ESTUDOS]`** → monta um cronograma de estudos para a prova
+- **`[PRIORIDADES_HOJE]`** → eventos de hoje e tarefas pendentes
+- **SQL** → qualquer outra operação sobre agenda, tarefas, eventos e contatos
 
 ## Como Usar
 

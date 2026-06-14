@@ -10,27 +10,17 @@ from database.operacoes import (
     concluir_tarefa,
     desconcluir_tarefa,
     deletar_tarefa,
+    listar_eventos_proximos,
 )
+from core.constantes import TOPICOS_IA, SUGESTOES_AGENDA, SUGESTOES_IA, SUGESTOES_ESTUDO
+from database.quiz_operacoes import registrar_tentativa
+from estudos.quiz import gerar_pergunta, avaliar_resposta
+from estudos.recomendacao import recomendar_revisao
 
 # ── Configuração da página ────────────────────────────────────────────────────
 st.set_page_config(page_title="Jarvis — Assistente Acadêmico", page_icon="J", layout="wide", initial_sidebar_state="expanded")
 
 # ── Constantes ────────────────────────────────────────────────────────────────
-SUGESTOES_AGENDA = [
-    "Quais eventos tenho essa semana?",
-    "Quais são meus próximos eventos?",
-    "Quem são meus contatos?",
-]
-
-SUGESTOES_IA = [
-    "O que é um embedding?",
-    "Como funciona o RAG?",
-    "O que é um transformer?",
-    "O que é deep learning?",
-    "O que é um LLM?",
-    "O que é viés na IA?",
-]
-
 ICONE_PRIORIDADE = {"alta": "🔴", "normal": "🟡", "baixa": "🟢"}
 
 # ── Session state ─────────────────────────────────────────────────────────────
@@ -56,26 +46,23 @@ st.markdown("""
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.header("📚 Conteúdos disponíveis")
-    st.caption("Pergunte ao Jarvis sobre:")
-    st.markdown("""
-- Embedding
-- PLN (Processamento de Linguagem Natural)
-- RAG (Retrieval-Augmented Generation)
-- Banco Vetorial
-- Transformers
-- LLM (Large Language Models)
-- Quarto Chinês
-- Viés da IA
-- Deep Learning
-- Aprendizado de Máquina
-""")
+    st.header("📅 Próximos compromissos")
+    eventos_proximos = listar_eventos_proximos(dias=7)
+    if eventos_proximos:
+        for evento in eventos_proximos:
+            ano, mes, dia = evento["data_evento"].split("-")
+            linha = f"- **{evento['titulo']}** — {dia}/{mes}"
+            if evento["hora_inicio"]:
+                linha += f" às {evento['hora_inicio']}"
+            st.markdown(linha)
+    else:
+        st.caption("Nenhum compromisso nos próximos 7 dias.")
 
 # ── Header ────────────────────────────────────────────────────────────────────
 st.title("🤖 Jarvis — Assistente Acadêmico")
 
 # ── Abas ─────────────────────────────────────────────────────────────────────
-aba_chat, aba_tarefas = st.tabs(["💬 Chat com Jarvis", "✅ Lista de Tarefas"])
+aba_chat, aba_tarefas, aba_quiz = st.tabs(["💬 Chat com Jarvis", "✅ Lista de Tarefas", "🧠 Quiz"])
 
 
 # ── Funções auxiliares ────────────────────────────────────────────────────────
@@ -117,9 +104,10 @@ def html_card_tarefa(t: dict, concluida: bool) -> str:
 
 
 def enviar_mensagem(pergunta: str):
+    historico_anterior = list(st.session_state.historico)
     st.session_state.historico.append({"role": "user", "content": pergunta})
     with st.spinner("Jarvis está pensando..."):
-        resultado = rodar_agente(pergunta)
+        resultado = rodar_agente(pergunta, historico_anterior)
     st.session_state.historico.append({
         "role": "ai",
         "content": resultado["resposta"],
@@ -134,6 +122,9 @@ def enviar_mensagem(pergunta: str):
 with aba_chat:
     st.subheader("Converse com Jarvis")
 
+    with st.expander("📚 Conteúdos disponíveis — pergunte ao Jarvis sobre:"):
+        st.markdown("\n".join(f"- {topico}" for topico in TOPICOS_IA))
+
     # Sugestão clicada vira pergunta imediatamente
     if "pergunta_sugerida" in st.session_state:
         enviar_mensagem(st.session_state.pop("pergunta_sugerida"))
@@ -141,7 +132,7 @@ with aba_chat:
     # Tela de boas-vindas com sugestões (só aparece com chat vazio)
     if not st.session_state.historico:
         st.caption("Para gerenciar tarefas, use a aba **Lista de Tarefas**. Experimente perguntar:")
-        selecionada = st.pills("Sugestões", SUGESTOES_AGENDA + SUGESTOES_IA, label_visibility="collapsed")
+        selecionada = st.pills("Sugestões", SUGESTOES_AGENDA + SUGESTOES_ESTUDO + SUGESTOES_IA, label_visibility="collapsed")
         if selecionada:
             st.session_state.pergunta_sugerida = selecionada
             st.rerun()
@@ -240,3 +231,84 @@ with aba_tarefas:
     concluidas = sum(1 for t in todas if t["status"] == "concluida")
     st.divider()
     st.caption(f"📊 Total: {len(todas)} tarefa(s) · ⏳ Pendentes: {pendentes} · ✅ Concluídas: {concluidas}")
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# ABA 3 — QUIZ / ACTIVE RECALL
+# ════════════════════════════════════════════════════════════════════════════
+with aba_quiz:
+    st.subheader("🧠 Quiz — Active Recall")
+    st.caption("Escolha um tópico, responda à pergunta gerada e receba uma avaliação na hora.")
+
+    # Recomendações com base no histórico de tentativas
+    recomendacoes = recomendar_revisao(list(TOPICOS_IA.keys()))
+    if recomendacoes:
+        st.markdown("**📊 Recomendado para você:**")
+        st.markdown("\n".join(f"- {r['topico']} — {r['motivo']}" for r in recomendacoes))
+        st.divider()
+
+    coluna_topico, coluna_quantidade = st.columns(2)
+    with coluna_topico:
+        topico_escolhido = st.selectbox("Tópico", options=list(TOPICOS_IA.keys()), key="quiz_topico_select")
+    with coluna_quantidade:
+        quantidade_perguntas = st.selectbox(
+            "Quantidade de perguntas", options=list(range(1, 11)), key="quiz_quantidade"
+        )
+
+    if st.button("🎲 Gerar pergunta(s)"):
+        perguntas = []
+        with st.spinner("Gerando pergunta(s)..."):
+            for _ in range(quantidade_perguntas):
+                perguntas_ja_geradas = [p["pergunta"] for p in perguntas]
+                dados = gerar_pergunta(topico_escolhido, perguntas_ja_geradas)
+                perguntas.append(dados)
+        st.session_state.quiz_perguntas = perguntas
+        st.session_state.pop("quiz_resultados", None)
+
+    if "quiz_perguntas" in st.session_state:
+        st.divider()
+        perguntas = st.session_state.quiz_perguntas
+        ja_respondido = "quiz_resultados" in st.session_state
+
+        if ja_respondido:
+            soma_notas = 0
+            for resultado in st.session_state.quiz_resultados:
+                soma_notas += resultado["nota"]
+            media_notas = soma_notas / len(st.session_state.quiz_resultados)
+            st.metric("Nota média do lote", f"{media_notas:.1f}/10")
+
+        for i, dados in enumerate(perguntas):
+            st.markdown(f"**Pergunta {i + 1} sobre {dados['topico']}:**")
+            st.write(dados["pergunta"])
+            st.text_area("Sua resposta", key=f"quiz_resposta_{i}", disabled=ja_respondido)
+
+            if ja_respondido:
+                resultado = st.session_state.quiz_resultados[i]
+                texto_resultado = f"**Nota: {resultado['nota']}/10**\n\n{resultado['feedback']}"
+                if resultado["nota"] >= 7:
+                    st.success(texto_resultado)
+                elif resultado["nota"] >= 4:
+                    st.warning(texto_resultado)
+                else:
+                    st.error(texto_resultado)
+
+        if st.button("✅ Responder", disabled=ja_respondido):
+            resultados = []
+            with st.spinner("Avaliando resposta(s)..."):
+                for i, dados in enumerate(perguntas):
+                    resposta_usuario = st.session_state.get(f"quiz_resposta_{i}", "")
+                    resultado = avaliar_resposta(
+                        dados["pergunta"], dados["resposta_esperada"], resposta_usuario
+                    )
+                    registrar_tentativa(dados["topico"], resultado["nota"])
+                    resultados.append(resultado)
+            st.session_state.quiz_resultados = resultados
+            st.rerun()
+
+        if "quiz_resultados" in st.session_state:
+            if st.button("➡️ Próximas perguntas"):
+                for i in range(len(perguntas)):
+                    st.session_state.pop(f"quiz_resposta_{i}", None)
+                st.session_state.pop("quiz_perguntas", None)
+                st.session_state.pop("quiz_resultados", None)
+                st.rerun()
