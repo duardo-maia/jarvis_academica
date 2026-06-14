@@ -2,13 +2,14 @@
 
 ## Visão Geral
 
-O **Jarvis** é um assistente de IA com interface web que combina três domínios:
+O **Jarvis** é um assistente de IA com interface web que combina quatro domínios:
 
 - **Agenda acadêmica**: consulta de tarefas, eventos, contatos e lembretes via banco de dados relacional.
 - **Base de conhecimento**: consulta a materiais de estudo (PDFs sobre IA) via busca híbrida em banco vetorial.
 - **Gerenciamento de tarefas**: CRUD visual de tarefas com prioridade e status na aba "Lista de Tarefas".
+- **Active recall (Quiz)**: geração de perguntas e avaliação de respostas sobre os tópicos de IA indexados, com recomendação de revisão baseada no histórico de tentativas.
 
-O usuário interage por uma interface Streamlit com duas abas: **Chat** (conversa com o agente) e **Lista de Tarefas** (gerenciamento visual).
+O usuário interage por uma interface Streamlit com uma sidebar (próximos compromissos) e três abas: **Chat** (conversa com o agente), **Lista de Tarefas** (gerenciamento visual) e **Quiz** (active recall).
 
 ---
 
@@ -80,6 +81,7 @@ Criado automaticamente na primeira execução.
 | `eventos` | Título, data, horário, local e contato vinculado |
 | `contatos` | Nome, telefone, e-mail e observações |
 | `lembretes` | Alertas associados a eventos |
+| `historico_quiz` | Tópico, nota (0-10) e data de cada tentativa do quiz (active recall) |
 
 ---
 

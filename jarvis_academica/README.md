@@ -8,15 +8,28 @@ Agente de IA com interface web para consultar agenda acadêmica e conteúdos sob
 jarvis_academica/
 ├── agente/
 │   ├── __init__.py
-│   └── agente.py        # Loop ReAct: SQL para agenda, BUSCAR_DOCS para documentos
+│   └── agente.py          # Loop ReAct: SQL para agenda, BUSCAR_DOCS para documentos
+├── core/
+│   ├── __init__.py
+│   ├── constantes.py       # Tópicos de IA, sugestões e palavras-chave compartilhadas
+│   └── logging_config.py   # Configuração do logger usado em todo o módulo
 ├── database/
 │   ├── __init__.py
-│   ├── operacoes.py     # Funções de acesso ao SQLite
-│   ├── schema.sql       # Estrutura das tabelas e dados de exemplo
-│   └── agenda_jarvis.db # Banco gerado automaticamente na primeira execução
-└── rag/
-    ├── __init__.py
-    └── consulta.py      # Wrapper que conecta ao banco vetorial
+│   ├── operacoes.py        # Funções de acesso ao SQLite (tarefas, eventos, contatos)
+│   ├── quiz_operacoes.py    # Registro e consulta de tentativas do quiz
+│   ├── schema.sql           # Estrutura das tabelas e dados de exemplo
+│   └── agenda_jarvis.db    # Banco gerado automaticamente na primeira execução
+├── estudos/
+│   ├── __init__.py
+│   ├── planejador.py        # Monta o plano de estudos (usado por PLANO_ESTUDOS)
+│   ├── quiz.py              # Gera perguntas e avalia respostas (active recall)
+│   └── recomendacao.py      # Recomenda tópicos de revisão com base no histórico do quiz
+├── rag/
+│   ├── __init__.py
+│   └── consulta.py          # Wrapper que conecta ao banco vetorial
+├── avaliacao/                # Casos de teste para avaliação do agente
+├── avaliar_sistema.py        # Script de avaliação automática do agente
+└── requirements.txt          # Dependências específicas deste módulo
 ```
 
 ## Banco de Dados
@@ -61,6 +74,13 @@ Use o chat para consultar sua agenda ou tirar dúvidas sobre os conteúdos de IA
 ### Aba Lista de Tarefas
 
 - Clique em **➕ Adicionar nova tarefa** para abrir o formulário (clique novamente para fechar)
-- Preencha título, descrição opcional e prioridade, depois clique em **✅ Salvar tarefa**
+- Preencha título, descrição opcional e prioridade, depois clique em **Salvar tarefa**
 - Filtre por **Pendentes**, **Concluídas** ou **Todas**
 - Use os ícones em cada tarefa: **✔** para concluir, **↩** para reabrir, **🗑** para deletar
+
+### Aba Quiz
+
+- Veja as recomendações de revisão (tópicos nunca testados ou com nota média baixa)
+- Escolha um tópico e a quantidade de perguntas, depois clique em **Gerar pergunta(s)**
+- Responda no campo de texto e clique em **Responder** para receber nota (0-10) e feedback de cada pergunta
+- Clique em **Próximas perguntas** para iniciar um novo lote
