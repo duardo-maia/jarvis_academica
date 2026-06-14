@@ -8,18 +8,26 @@ Assistente pessoal acadêmico desenvolvido como trabalho prático da disciplina.
 ia/
 ├── app.py                  # Entrada principal — interface web (Streamlit)
 ├── requirements.txt        # Dependências do projeto
+├── ARQUITETURA.md          # Visão geral da arquitetura do sistema
 ├── .env.example            # Exemplos de chaves de API
+├── logs/                   # Logs de execução (gerado)
 │
-├── jarvis_academica/       # Módulo do agente e banco de dados
+├── jarvis_academica/       # Módulo do agente, banco de dados e estudos
 │   ├── agente/             # Lógica do agente de IA (loop ReAct)
-│   ├── database/           # Banco SQLite: tarefas, eventos, contatos
-│   └── rag/                # Integração com o banco vetorial
+│   ├── core/               # Constantes compartilhadas e configuração de logging
+│   ├── database/           # Banco SQLite: tarefas, eventos, contatos e tentativas de quiz
+│   ├── estudos/            # Plano de estudos, geração/avaliação de quiz e recomendação de revisão
+│   ├── rag/                # Integração com o banco vetorial
+│   ├── avaliacao/          # Casos de teste para avaliação do sistema
+│   ├── avaliar_sistema.py  # Script de avaliação automática do agente
+│   └── requirements.txt    # Dependências específicas do módulo
 │
 └── banco_vetorial/         # Módulo de indexação e busca semântica
     ├── docs/               # PDFs, markdowns e DATASET.md
     ├── chunks/             # Divisão dos documentos em chunks
     ├── indexacao/          # Indexação com ChromaDB + BM25
     ├── recuperacao/        # Busca híbrida e geração de resposta
+    ├── tests/              # Notebooks de teste
     └── data/               # Arquivos internos do ChromaDB (gerado)
 ```
 
@@ -57,11 +65,12 @@ O navegador abrirá automaticamente em `http://localhost:8501`.
 
 ## Interface
 
-O app possui uma sidebar e duas abas:
+O app possui uma sidebar e três abas:
 
-- **Sidebar** — lista os 10 tópicos de IA disponíveis para consulta, aberta por padrão
-- **Chat com Jarvis** — converse para consultar sua agenda (eventos, contatos) e tirar dúvidas sobre os conteúdos de IA indexados; sugestões clicáveis na tela inicial facilitam os primeiros testes
+- **Sidebar** — lista os próximos compromissos da agenda (próximos 7 dias), aberta por padrão
+- **Chat com Jarvis** — converse para consultar sua agenda (eventos, contatos) e tirar dúvidas sobre os conteúdos de IA indexados; um expander lista os 10 tópicos de IA disponíveis e sugestões clicáveis na tela inicial facilitam os primeiros testes
 - **Lista de Tarefas** — adicione, conclua e remova tarefas visualmente
+- **Quiz** — active recall: escolha um tópico de IA, gere uma ou mais perguntas com base nos materiais indexados, responda e receba uma avaliação (nota de 0 a 10 e feedback) na hora; o Jarvis também recomenda tópicos para revisão com base no histórico de tentativas
 
 ## Tecnologias
 
