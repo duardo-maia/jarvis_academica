@@ -1,14 +1,12 @@
-# ── Funções de acesso ao histórico do quiz (active recall) ────────────────────
-
-import sqlite3
+# ── Quiz — histórico de tentativas (active recall) ─────────────────────────────
 
 from core.logging_config import get_logger
-from database.operacoes import DB_PATH
+from database.operacoes import _conectar
 
 logger = get_logger(__name__)
 
 # Self-migration: garante a tabela mesmo em bancos criados antes desta feature
-_conn = sqlite3.connect(DB_PATH)
+_conn = _conectar()
 _conn.execute("""
     CREATE TABLE IF NOT EXISTS historico_quiz (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,7 +21,7 @@ _conn.close()
 
 def registrar_tentativa(topico: str, nota: int) -> bool:
     """Registra uma tentativa de quiz (tópico + nota de 0 a 10). Retorna True se sucesso."""
-    conn = sqlite3.connect(DB_PATH)
+    conn = _conectar()
     cursor = conn.cursor()
     try:
         cursor.execute(
@@ -41,8 +39,7 @@ def registrar_tentativa(topico: str, nota: int) -> bool:
 
 def listar_historico(topico: str = None) -> list[dict]:
     """Retorna o histórico de tentativas do quiz, opcionalmente filtrado por tópico."""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    conn = _conectar()
     cursor = conn.cursor()
     try:
         if topico:
@@ -62,7 +59,7 @@ def listar_historico(topico: str = None) -> list[dict]:
 
 def media_por_topico() -> dict:
     """Retorna a média das notas por tópico, com base no histórico de tentativas."""
-    conn = sqlite3.connect(DB_PATH)
+    conn = _conectar()
     cursor = conn.cursor()
     try:
         cursor.execute("SELECT topico, AVG(nota) FROM historico_quiz GROUP BY topico")
