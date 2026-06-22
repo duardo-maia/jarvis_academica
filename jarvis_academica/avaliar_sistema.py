@@ -1,50 +1,91 @@
-# ── Avaliação do sistema RAG — gera relatório com pergunta, documentos
-# recuperados, resposta e espaço para classificação manual ───────────────────
+# ── Avaliação do sistema — RAG + agente completo (tool calling) — gera
+# relatório com pergunta, documentos/ferramentas, resposta, verificação
+# automática e espaço para classificação manual. Também gera a Análise de
+# Erros, semeada com falhas reais encontradas em sessão de desenvolvimento. ──
 
 from dotenv import load_dotenv
 load_dotenv()
 
+from agente.agente import rodar_agente
+from avaliacao.casos_teste import CASOS_AGENTE, CASOS_RAG
+from avaliacao.falhas import FALHAS, renderizar_analise_erros
+from avaliacao.relatorio import (
+    PLACEHOLDER,
+    carregar_classificacoes_antigas,
+    renderizar_caso_agente,
+    renderizar_caso_rag,
+)
+from avaliacao.verificacao import verificar_caso
+from database.agenda import deletar_evento, listar_eventos_proximos
+from database.tarefas import deletar_tarefa, listar_tarefas
 from rag.consulta import consultar_documentos
 
-PERGUNTAS = [
-    "O que é um embedding e para que ele é usado em IA?",
-    "O que é Processamento de Linguagem Natural (PLN)?",
-    "O que é RAG (Retrieval-Augmented Generation) e como ele funciona?",
-    "O que é um banco de dados vetorial e para que serve?",
-    "O que é a arquitetura Transformer e qual o papel do mecanismo de atenção?",
-    "O que é um LLM (Large Language Model)?",
-    "Explique o experimento mental do Quarto Chinês.",
-    "O que é viés algorítmico (viés da IA) e por que ele ocorre?",
-    "O que é Deep Learning e como se relaciona com redes neurais profundas?",
-    "O que é Aprendizado de Máquina (Machine Learning)?",
-]
+CAMINHO_RELATORIO = "resultados_avaliacao.md"
 
-arquivo = open("resultados_avaliacao.md", "w", encoding="utf-8")
-arquivo.write("# Avaliação do sistema — RAG\n\n")
 
-numero = 1
-for pergunta in PERGUNTAS:
-    print(f"[{numero}/{len(PERGUNTAS)}] {pergunta}")
-    resposta, chunks = consultar_documentos(pergunta)
+def executar_caso_rag(caso: dict) -> dict:
+    try:
+        resposta, chunks = consultar_documentos(caso["pergunta"])
+        return {"resposta": resposta, "chunks": chunks, "passos": [], "erro": None}
+    except Exception as e:
+        return {"resposta": f"ERRO ao executar: {e}", "chunks": [], "passos": [], "erro": str(e)}
 
-    arquivo.write(f"## {numero}. {pergunta}\n\n")
 
-    arquivo.write("**Documentos recuperados:**\n\n")
-    if len(chunks) == 0:
-        arquivo.write("- Nenhum documento recuperado.\n")
-    else:
-        for chunk in chunks:
-            fonte = chunk["id"].rsplit("-chunk-", 1)[0]
-            arquivo.write(f"- {fonte} (score: {chunk['score']:.3f})\n")
-    arquivo.write("\n")
+def _limpar_entidades_criadas(tarefas_antes: set, eventos_antes: set) -> None:
+    for t in listar_tarefas():
+        if t["id"] not in tarefas_antes:
+            deletar_tarefa(t["id"])
+    for e in listar_eventos_proximos(dias=3650):
+        if e["id"] not in eventos_antes:
+            deletar_evento(e["id"])
 
-    arquivo.write("**Resposta:**\n\n")
-    arquivo.write(resposta + "\n\n")
 
-    arquivo.write("**Classificação:** _(a preencher: correta / parcialmente correta / incorreta)_\n\n")
-    arquivo.write("---\n\n")
+def executar_caso_agente(caso: dict) -> tuple:
+    tarefas_antes = {t["id"] for t in listar_tarefas()}
+    eventos_antes = {e["id"] for e in listar_eventos_proximos(dias=3650)}
+    avisos = []
+    try:
+        resultado = rodar_agente(caso["pergunta"])
+        resultado["erro"] = None
+        avisos = verificar_caso(caso, resultado)
+    except Exception as e:
+        resultado = {"resposta": f"ERRO ao executar: {e}", "chunks": [], "passos": [], "erro": str(e)}
+    finally:
+        if caso.get("limpar_apos"):
+            _limpar_entidades_criadas(tarefas_antes, eventos_antes)
+    return resultado, avisos
 
-    numero = numero + 1
 
-arquivo.close()
-print("\nRelatório gerado em: resultados_avaliacao.md")
+def gerar_relatorio() -> None:
+    classificacoes_antigas = carregar_classificacoes_antigas(CAMINHO_RELATORIO)
+    blocos = ["# Avaliação do Sistema\n"]
+
+    total = len(CASOS_RAG) + len(CASOS_AGENTE)
+    numero = 1
+
+    for caso in CASOS_RAG:
+        print(f"[{numero}/{total}] (RAG) {caso['pergunta']}")
+        resultado = executar_caso_rag(caso)
+        antiga = classificacoes_antigas.get(caso["pergunta"])
+        classificacao = antiga["classificacao"] if antiga else PLACEHOLDER
+        justificativa = antiga["justificativa"] if antiga else None
+        blocos.append(renderizar_caso_rag(numero, caso, resultado, classificacao, justificativa))
+        numero += 1
+
+    for caso in CASOS_AGENTE:
+        print(f"[{numero}/{total}] (Agente) {caso['pergunta']}")
+        resultado, avisos = executar_caso_agente(caso)
+        antiga = classificacoes_antigas.get(caso["pergunta"])
+        classificacao = antiga["classificacao"] if antiga else PLACEHOLDER
+        justificativa = antiga["justificativa"] if antiga else None
+        blocos.append(renderizar_caso_agente(numero, caso, resultado, avisos, classificacao, justificativa))
+        numero += 1
+
+    blocos.append(renderizar_analise_erros(FALHAS))
+
+    with open(CAMINHO_RELATORIO, "w", encoding="utf-8") as f:
+        f.write("\n".join(blocos))
+    print(f"\nRelatório gerado em: {CAMINHO_RELATORIO}")
+
+
+gerar_relatorio()

@@ -41,7 +41,9 @@ CREATE TABLE IF NOT EXISTS tarefas (
     prioridade TEXT DEFAULT 'normal' CHECK(prioridade IN ('baixa', 'normal', 'alta')),
     status TEXT DEFAULT 'pendente' CHECK(status IN ('pendente', 'concluida')),
     data_criacao DATETIME DEFAULT (datetime('now', 'localtime')),
-    data_conclusao DATETIME
+    data_conclusao DATETIME,
+    evento_id INTEGER,
+    FOREIGN KEY (evento_id) REFERENCES eventos(id)
 );
 
 -- Tabela de histórico do quiz (active recall)

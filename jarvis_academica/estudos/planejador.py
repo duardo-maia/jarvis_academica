@@ -1,8 +1,11 @@
 # ── Plano de Estudos — combina agenda, tarefas e tópicos de IA ────────────────
 
+from datetime import date
+
 from core.constantes import TOPICOS_IA
 from core.logging_config import get_logger
-from database.operacoes import listar_eventos_proximos, listar_tarefas
+from database.agenda import listar_eventos_proximos
+from database.tarefas import listar_tarefas
 from estudos.recomendacao import recomendar_revisao
 
 logger = get_logger(__name__)
@@ -51,6 +54,13 @@ def montar_plano_estudos(dias: int = 7) -> str:
                 linha += f" ({e['local']})"
             linhas.append(linha)
         partes.append(f"PRÓXIMOS EVENTOS (próximos {dias} dias):\n" + "\n".join(linhas))
+
+        mais_proximo = min(eventos, key=lambda e: e["data_evento"])
+        dias_restantes = (date.fromisoformat(mais_proximo["data_evento"]) - date.today()).days
+        partes.append(
+            f'DIAS RESTANTES até "{mais_proximo["titulo"]}": {dias_restantes} '
+            "(0 = hoje, negativo = já passou)"
+        )
     else:
         partes.append(f"Nenhum evento nos próximos {dias} dias.")
 
@@ -72,6 +82,12 @@ def montar_plano_estudos(dias: int = 7) -> str:
         partes.append("TÓPICOS DE ESTUDO RELACIONADOS (disponíveis nos materiais indexados):\n" + "\n".join(linhas))
     else:
         partes.append("Nenhum tópico de IA identificado diretamente nos eventos/tarefas atuais.")
+
+    partes.append(
+        "LISTA FECHADA DE TÓPICOS COM MATERIAL DISPONÍVEL NO SISTEMA (RAG): "
+        + ", ".join(TOPICOS_IA.keys())
+        + ". O sistema NÃO tem material indexado sobre nenhum outro assunto além desta lista."
+    )
 
     recomendacoes = recomendar_revisao(list(TOPICOS_IA.keys()))
     if recomendacoes:

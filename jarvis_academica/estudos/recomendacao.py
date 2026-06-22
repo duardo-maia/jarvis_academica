@@ -1,7 +1,7 @@
 # ── Recomendação de Revisão — identifica tópicos a revisar com base no quiz ──
 
 from core.logging_config import get_logger
-from database.quiz_operacoes import media_por_topico, topicos_nao_revisados
+from database.quiz import media_por_topico, topicos_nao_revisados
 
 logger = get_logger(__name__)
 

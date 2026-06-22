@@ -5,33 +5,49 @@ from database.operacoes import _conectar
 
 logger = get_logger(__name__)
 
+# Self-migration: garante a coluna mesmo em bancos criados antes desta feature
+_conn = _conectar()
+_colunas = [c[1] for c in _conn.execute("PRAGMA table_info(tarefas)").fetchall()]
+if "evento_id" not in _colunas:
+    _conn.execute("ALTER TABLE tarefas ADD COLUMN evento_id INTEGER REFERENCES eventos(id)")
+    _conn.commit()
+_conn.close()
+
 
 def listar_tarefas(status: str = None) -> list[dict]:
-    """Retorna lista de tarefas. status pode ser 'pendente', 'concluida' ou None (todas)."""
+    """Retorna lista de tarefas (com título/data do evento vinculado, se houver).
+    status pode ser 'pendente', 'concluida' ou None (todas)."""
     conn = _conectar()
     cursor = conn.cursor()
+    base_sql = """
+        SELECT t.*, e.titulo AS evento_titulo, e.data_evento AS evento_data
+        FROM tarefas t
+        LEFT JOIN eventos e ON t.evento_id = e.id
+    """
     if status:
         cursor.execute(
-            "SELECT * FROM tarefas WHERE status = ? ORDER BY prioridade DESC, data_criacao ASC",
+            base_sql + " WHERE t.status = ? ORDER BY t.prioridade DESC, t.data_criacao ASC",
             (status,)
         )
     else:
         cursor.execute(
-            "SELECT * FROM tarefas ORDER BY status ASC, prioridade DESC, data_criacao ASC"
+            base_sql + " ORDER BY t.status ASC, t.prioridade DESC, t.data_criacao ASC"
         )
     rows = [dict(r) for r in cursor.fetchall()]
     conn.close()
     return rows
 
 
-def adicionar_tarefa(titulo: str, descricao: str = None, prioridade: str = "normal") -> bool:
-    """Adiciona uma tarefa. Retorna True se sucesso."""
+def adicionar_tarefa(
+    titulo: str, descricao: str = None, prioridade: str = "normal", evento_id: int = None
+) -> bool:
+    """Adiciona uma tarefa, opcionalmente vinculada a um evento da agenda. Retorna True se sucesso."""
     conn = _conectar()
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "INSERT INTO tarefas (titulo, descricao, prioridade) VALUES (?, ?, ?)",
-            (titulo, descricao, prioridade)
+            "INSERT INTO tarefas (titulo, descricao, prioridade, evento_id) VALUES (?, ?, ?, ?)",
+            (titulo, descricao, prioridade, evento_id)
         )
         conn.commit()
         return True
