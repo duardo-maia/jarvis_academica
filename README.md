@@ -94,6 +94,6 @@ O relatório também é gerado localmente em [`jarvis_academica/resultados_avali
 
 Trabalho em dupla>:
 Giovana da Silva M. Muhl
-Eduardo Silva 
+Eduardo S. Silva 
 
- — disciplina de Inteligência Artificial.
+ — disciplina de Inteligência Artificial - Prof.: Dr. Edson Takashi / Faculdade de Computação, UFMS.
